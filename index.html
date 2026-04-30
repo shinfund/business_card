@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>법인카드 DASHBOARD</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#378ADD;--sky50:#E6F1FB;--sky100:#B5D4F4;--sky600:#185FA5;--sky800:#0C447C;
+  --teal:#1D9E75;--teal50:#E1F5EE;--teal100:#9FE1CB;
+  --coral:#D85A30;--coral50:#FAECE7;--coral100:#F5C4B3;
+  --amber:#BA7517;--amber50:#FAEEDA;--amber100:#FAC775;
+  --green:#639922;--green50:#EAF3DE;--green100:#C0DD97;
+  --purple:#534AB7;--purple50:#EEEDFE;--purple100:#CECBF6;
+  --bg:#F5F8FF;--card:#fff;--border:#DDE8F5;--border2:#EBF3FF;
+  --txt:#1A2535;--txt2:#3D4F68;--txt3:#6B7E99;
+  --shadow:0 2px 12px rgba(55,138,221,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.hdr{background:var(--bg);padding:14px 16px 0;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(55,138,221,.07)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:9px}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#378ADD,#185FA5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-name{font-size:17px;font-weight:800;color:#0C3A6A;letter-spacing:-.5px}
+.logo-sub{font-size:10px;color:#5A8AB8;font-weight:500;margin-top:-2px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.btn-sync{display:flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--sky100);color:var(--sky600);padding:7px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-sync:hover{background:var(--sky50);border-color:var(--sky)}
+.btn-api{display:flex;align-items:center;gap:5px;background:var(--sky50);border:1.5px solid var(--sky100);color:var(--sky800);padding:7px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-api:hover{background:var(--sky100)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin .7s linear infinite}
+.sync-time{font-size:11px;color:#7AAAC8;text-align:right;margin-bottom:6px}
+.tab-nav{display:flex;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 10px}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:9px 13px;font-size:13px;font-weight:600;color:#5A8AB8;cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;font-family:inherit;min-height:42px;white-space:nowrap;transition:.2s}
+.tab-btn.on{color:#0C447C;border-bottom-color:var(--sky);font-weight:700}
+.tab-btn:hover:not(.on){color:var(--sky600);background:rgba(55,138,221,.05);border-radius:6px 6px 0 0}
+.main{padding:16px;max-width:1200px;margin:0 auto}
+.panel{display:none}.panel.on{display:block}
+.sum-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:18px}
+.sum-card{background:var(--card);border-radius:14px;padding:14px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden}
+.sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.c-blue::before{background:var(--sky)}.c-teal::before{background:var(--teal)}.c-amber::before{background:var(--amber)}.c-purple::before{background:var(--purple)}
+.sum-lbl{font-size:11px;color:var(--txt3);font-weight:600;letter-spacing:.3px;margin-bottom:5px}
+.sum-val{font-size:20px;font-weight:800;color:var(--txt);letter-spacing:-.5px}
+.sum-val span{font-size:12px;font-weight:500;color:var(--txt3);margin-left:2px}
+.sum-sub{font-size:11px;color:var(--txt3);margin-top:2px}
+.sec-ttl{font-size:14px;font-weight:700;color:var(--txt);margin:18px 0 10px;display:flex;align-items:center;gap:7px}
+.sec-ttl::before{content:'';display:block;width:3px;height:15px;background:var(--sky);border-radius:3px}
+.acc-item{background:var(--card);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:9px}
+.acc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.acc-name{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.acc-amt{font-size:14px;font-weight:700;color:var(--txt)}
+.acc-lbl{font-size:10px;color:var(--txt3);text-align:right}
+.prog{height:6px;background:var(--border);border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;border-radius:10px;transition:width .4s}
+.prog-pct{font-size:11px;font-weight:600;text-align:right;margin-top:3px}
+.badge{display:inline-flex;align-items:center;padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700;margin-left:5px}
+.lim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:18px}
+.lim-card{background:var(--card);border-radius:14px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.lim-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:12px;font-weight:700}
+.chip-corp{background:var(--sky50);color:var(--sky800);border:1px solid var(--sky100)}
+.chip-fuel{background:var(--teal50);color:#085041;border:1px solid var(--teal100)}
+.lim-remain{font-size:17px;font-weight:800;color:var(--teal)}
+.lim-used{font-size:11px;color:var(--txt3);margin-top:1px;text-align:right}
+.lim-row{display:flex;align-items:center;gap:9px;padding:7px 9px;background:var(--bg);border-radius:8px;margin-bottom:6px}
+.lim-row-nm{flex:1;font-size:12px;font-weight:600;color:var(--txt2)}
+.lim-row-bar{flex:1.5}
+.lim-row-r{min-width:75px;text-align:right}
+.lim-row-u{font-size:12px;font-weight:700;color:var(--txt)}
+.lim-row-l{font-size:10px;color:var(--txt3)}
+.chart-wrap{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:18px;overflow-x:auto}
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:160px;padding-bottom:28px;min-width:380px}
+.bar-grp{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.bars{display:flex;gap:2px;align-items:flex-end;width:100%}
+.bar{flex:1;border-radius:4px 4px 0 0;transition:.3s;cursor:pointer;min-height:3px;position:relative}
+.bar:hover{opacity:.75}
+.bar-lbl{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--txt3);white-space:nowrap;font-weight:600}
+.chart-leg{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--txt3)}
+.leg-dot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fc{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--card);color:var(--txt3);cursor:pointer;font-family:inherit;transition:.2s;white-space:nowrap}
+.fc.on{background:var(--sky);color:#fff;border-color:var(--sky)}
+.fc:hover:not(.on){border-color:var(--sky100);color:var(--sky)}
+.search-wrap{position:relative;margin-bottom:12px}
+.search-wrap input{width:100%;padding:10px 14px 10px 36px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--card);color:var(--txt);font-family:inherit;outline:none;transition:.2s}
+.search-wrap input:focus{border-color:var(--sky)}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--txt3);pointer-events:none}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+thead th{background:var(--sky50);color:var(--sky800);font-size:11px;font-weight:700;padding:9px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--sky100)}
+tbody td{padding:9px 10px;font-size:12px;color:var(--txt2);border-bottom:1px solid var(--border2);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--sky50)}
+.cat-tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap}
+.amt-r{font-weight:700;color:var(--txt);text-align:right;white-space:nowrap}
+.dt{color:var(--txt3);white-space:nowrap;font-size:11px}
+.pager{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:12px;flex-wrap:wrap}
+.pg{width:30px;height:30px;border-radius:7px;border:1.5px solid var(--border);background:var(--card);color:var(--txt3);cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.pg:hover{border-color:var(--sky);color:var(--sky)}
+.pg.on{background:var(--sky);color:#fff;border-color:var(--sky)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#1A2535;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;transition:.3s;opacity:0;pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.empty{text-align:center;padding:36px 16px;color:var(--txt3)}
+.empty .ico{font-size:36px;margin-bottom:10px}
+@media(min-width:481px){.main{padding:20px}.hdr{padding:16px 20px 0}.tab-nav{margin:0 -20px;padding:0 14px}.sum-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:769px){.main{padding:26px 32px}.hdr{padding:18px 32px 0}.tab-nav{margin:0 -32px;padding:0 28px}.tab-btn{padding:11px 18px;font-size:14px}.sum-grid{grid-template-columns:repeat(4,1fr)}.bar-chart{height:200px;gap:14px}.logo-name{font-size:19px}}
+@media(min-width:1100px){.main{padding:30px 40px}.hdr{padding:20px 40px 0}.tab-nav{margin:0 -40px;padding:0 36px}}
+</style>
+</head>
+<body>
+
+<div id="apiModal" style="display:none">
+  <div style="background:#fff;border-radius:20px;padding:26px 22px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="width:38px;height:38px;background:linear-gradient(135deg,#378ADD,#185FA5);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:#0C3A6A">노션 API 키 설정</div>
+        <div style="font-size:11px;color:#6B7E99">한 번 입력하면 브라우저에 저장됩니다</div>
+      </div>
+    </div>
+    <div style="background:#EEF5FF;border-radius:11px;padding:13px;margin-bottom:14px;font-size:12px;color:#3D4F68;line-height:1.8">
+      <b style="color:#0C447C">발급 방법</b><br>
+      ① <a href="https://www.notion.so/profile/integrations" target="_blank" style="color:#378ADD">notion.so/profile/integrations</a> 접속<br>
+      ② 새 Integration 만들기 &rarr; 저장<br>
+      ③ 법인카드-DASHBORD 페이지 &rarr; ··· &rarr; 연결<br>
+      ④ 액세스 토큰 &rarr; <b>복사</b> 버튼 클릭
+    </div>
+    <input id="apiInput" type="password" placeholder="ntn_xxxx 또는 secret_xxxx..."
+      style="width:100%;padding:12px 14px;border:1.5px solid #D0E4F8;border-radius:12px;font-size:16px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
+      oninput="this.style.borderColor='#378ADD'"
+      onkeydown="if(event.key==='Enter')saveKey()">
+    <p id="keyErr" style="font-size:12px;color:#D85A30;margin:6px 0 0;display:none">올바른 키 형식이 아닙니다 (ntn_ 또는 secret_로 시작)</p>
+    <div style="display:flex;gap:9px;margin-top:13px">
+      <button onclick="closeApiModal()" style="flex:1;padding:12px;border:1.5px solid #D0E4F8;border-radius:12px;background:#fff;color:#6B7E99;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">나중에</button>
+      <button onclick="saveKey()" style="flex:2;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#378ADD,#185FA5);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">저장 후 로드</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 36 36" width="22" height="22">
+          <rect x="4" y="19" width="5" height="13" rx="2" fill="#A8D8EA"/>
+          <rect x="13" y="12" width="5" height="20" rx="2" fill="#7EC8E3"/>
+          <rect x="22" y="16" width="5" height="16" rx="2" fill="#A8D8EA"/>
+          <circle cx="6.5" cy="15.5" r="2" fill="#FFD166"/>
+          <circle cx="15.5" cy="8.5" r="2" fill="#FFD166"/>
+          <circle cx="24.5" cy="12.5" r="2" fill="#FFD166"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-name">법인카드 DASHBOARD</div>
+        <div class="logo-sub">Notion 실시간 연동</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <button class="btn-api" onclick="openApiModal()">🔑 API</button>
+      <button class="btn-sync" onclick="syncData()">
+        <svg id="syncIco" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        새로고침
+      </button>
+    </div>
+  </div>
+  <div class="sync-time" id="syncTime">마지막 업데이트: —</div>
+  <nav class="tab-nav">
+    <button class="tab-btn on" onclick="goTab('overview',this)">📊 현황 요약</button>
+    <button class="tab-btn" onclick="goTab('account',this)">📂 계정별 분석</button>
+    <button class="tab-btn" onclick="goTab('limit',this)">💳 한도 잔액</button>
+    <button class="tab-btn" onclick="goTab('monthly',this)">📅 월별 추이</button>
+    <button class="tab-btn" onclick="goTab('detail',this)">📋 사용 내역</button>
+  </nav>
+</header>
+
+<main class="main">
+  <div class="panel on" id="pOverview">
+    <div class="sum-grid" id="sumGrid"></div>
+    <div class="sec-ttl">이번 달 계정별 사용금액</div>
+    <div id="overviewAcc"></div>
+    <div class="sec-ttl">이번 달 TOP 지출</div>
+    <div class="tbl-wrap"><table><thead><tr><th>사용일자</th><th>지출내역</th><th>계정항목</th><th style="text-align:right">합계</th></tr></thead><tbody id="topTbody"></tbody></table></div>
+  </div>
+  <div class="panel" id="pAccount">
+    <div class="filter-row" id="accMonthFilter"></div>
+    <div id="accList"></div>
+  </div>
+  <div class="panel" id="pLimit">
+    <div class="filter-row" id="limMonthFilter"></div>
+    <div class="lim-grid" id="limGrid"></div>
+  </div>
+  <div class="panel" id="pMonthly">
+    <div class="chart-wrap">
+      <div class="sec-ttl" style="margin-top:0">월별 사용금액 추이</div>
+      <div class="bar-chart" id="barChart"></div>
+      <div class="chart-leg" id="chartLeg"></div>
+    </div>
+    <div class="sec-ttl">월별 상세</div>
+    <div id="monthlyDetail"></div>
+  </div>
+  <div class="panel" id="pDetail">
+    <div class="filter-row" id="dtMonthFilter"></div>
+    <div class="filter-row" id="dtCatFilter"></div>
+    <div class="search-wrap">
+      <svg class="search-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="srch" type="text" placeholder="지출내역, 계정항목 검색..." oninput="renderDetail()">
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>사용일자</th><th>지출내역</th><th>계정항목</th><th style="text-align:right">공급가</th><th style="text-align:right">부가세</th><th style="text-align:right">합계</th></tr></thead>
+        <tbody id="dtTbody"></tbody>
+      </table>
+    </div>
+    <div class="pager" id="pager"></div>
+  </div>
+</main>
+
+<script>
+
+const NOTION_DB='2f559c8c9c0a804a9201e861453d6b48';
+const NOTION_LIM='2f659c8c9c0a8050b347ec81f11e9084';
+const NOTION_VER='2022-06-28';
+const CAT_CLR={
+  '비급여성':{bg:'#E6F1FB',fg:'#0C447C',dot:'#378ADD'},
+  '비급여성(생수)':{bg:'#E1F5EE',fg:'#085041',dot:'#1D9E75'},
+  '소모품비':{bg:'#EEEDFE',fg:'#3C3489',dot:'#534AB7'},
+  '차량비':{bg:'#EAF3DE',fg:'#27500A',dot:'#639922'},
+  '차량비(법인카드)':{bg:'#FAEEDA',fg:'#633806',dot:'#BA7517'},
+  '도서인쇄비':{bg:'#FAECE7',fg:'#712B13',dot:'#D85A30'},
+};
+function clr(cat){return CAT_CLR[cat]||{bg:'#F1EFE8',fg:'#5F5E5A',dot:'#B4B2A9'}}
+let RD=[],LD=[],dtPage=1,dtMon='all',dtCat='all',accMon='all',limMon='all';
+const PS=20;
+const BUILT_LIM=[
+  {통합계정:'다과부식',한도금액:100000,계정항목:'비급여성',카드명:'법인카드'},
+  {통합계정:'직원회식',한도금액:280000,계정항목:'비급여성',카드명:'법인카드'},
+  {통합계정:'중석식대',한도금액:400000,계정항목:'비급여성',카드명:'법인카드'},
+  {통합계정:'소모품비',한도금액:500000,계정항목:'소모품비',카드명:'법인카드'},
+  {통합계정:'차량비',한도금액:800000,계정항목:'차량비',카드명:'주유카드'},
+  {통합계정:'차량비(법인카드)',한도금액:150000,계정항목:'차량비(법인카드)',카드명:'법인카드'},
+  {통합계정:'생수대금',한도금액:90000,계정항목:'비급여성(생수)',카드명:'법인카드'},
+  {통합계정:'도서인쇄비',한도금액:120000,계정항목:'도서인쇄비',카드명:'법인카드'},
+];
+const fmt=n=>Math.round(n||0).toLocaleString('ko-KR');
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function setSync(on){document.getElementById('syncIco').classList.toggle('spinning',on)}
+function updTime(){document.getElementById('syncTime').textContent='마지막 업데이트: '+new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function getMonths(){return[...new Set(RD.map(r=>r.month))].sort()}
+function byMon(m){return m==='all'?RD:RD.filter(r=>r.month===m)}
+function goTab(id,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  const pid='p'+id.charAt(0).toUpperCase()+id.slice(1);
+  document.getElementById(pid).classList.add('on');
+}
+function openApiModal(){
+  const saved=localStorage.getItem('notion_api_key')||'';
+  document.getElementById('apiInput').value=saved;
+  document.getElementById('keyErr').style.display='none';
+  const m=document.getElementById('apiModal');
+  m.style.cssText='display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,37,53,.65);z-index:9999;align-items:center;justify-content:center;padding:20px';
+  document.body.style.overflow='hidden';
+}
+function closeApiModal(){
+  document.getElementById('apiModal').style.display='none';
+  document.body.style.overflow='';
+}
+function saveKey(){
+  const key=document.getElementById('apiInput').value.trim();
+  const err=document.getElementById('keyErr');
+  if(!key||(!key.startsWith('ntn_')&&!key.startsWith('secret_'))){err.style.display='block';return;}
+  err.style.display='none';
+  localStorage.setItem('notion_api_key',key);
+  closeApiModal();
+  loadFromApi(key);
+}
+async function queryDB(dbId,key,cursor){
+  const body={page_size:100,sorts:[{property:'사용일자',direction:'ascending'}]};
+  if(cursor)body.start_cursor=cursor;
+  const r=await fetch('https://api.notion.com/v1/databases/'+dbId+'/query',{method:'POST',headers:{'Authorization':'Bearer '+key,'Notion-Version':NOTION_VER,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('API '+r.status);
+  return r.json();
+}
+async function fetchAll(dbId,key){
+  let rows=[],cur=null,p=0;
+  while(p<20){const d=await queryDB(dbId,key,cur);rows=rows.concat(d.results||[]);if(d.has_more&&d.next_cursor){cur=d.next_cursor;p++;}else break;}
+  return rows;
+}
+function parseRow(pg){
+  const p=pg.properties||{};
+  const date=p['사용일자']?.date?.start||'';
+  if(!date)return null;
+  const s=p['공급가']?.number||0,v=p['부가세']?.number||0;
+  return{date,month:date.slice(0,7),supply:s,vat:v,total:s+v,cat:p['계정항목']?.select?.name||'-',desc:p['사용목적 및 지출내역']?.title?.[0]?.plain_text||''};
+}
+function parseLim(pg){
+  const p=pg.properties||{};
+  const t=k=>p[k]?.title?.[0]?.plain_text||p[k]?.rich_text?.[0]?.plain_text||'';
+  return{통합계정:t('통합계정')||t('Name'),한도금액:p['한도금액']?.number||0,계정항목:p['계정항목']?.select?.name||'',카드명:p['카드명']?.select?.name||''};
+}
+async function loadFromApi(key){
+  setSync(true);
+  document.getElementById('syncTime').innerHTML='<span style="color:#378ADD">노션 API 로드 중...</span>';
+  try{
+    const[uRows,lRows]=await Promise.all([fetchAll(NOTION_DB,key),fetchAll(NOTION_LIM,key).catch(()=>[])]);
+    const parsed=uRows.map(parseRow).filter(Boolean);
+    if(parsed.length>0){RD=parsed;updTime();toast('노션 API 로드 완료 ('+RD.length+'건)');}
+    else{updTime();toast('데이터 없음 · 내장 데이터 유지');}
+    const pl=lRows.map(parseLim).filter(r=>r.통합계정);
+    if(pl.length>0)LD=pl;
+    renderAll();
+  }catch(e){
+    updTime();
+    if(e.message.includes('401')||e.message.includes('403')){toast('API 키 오류 · 다시 확인해주세요');localStorage.removeItem('notion_api_key');openApiModal();}
+    else{toast('연결 실패 · 내장 데이터 유지');}
+    renderAll();
+  }finally{setSync(false);}
+}
+function syncData(){const key=localStorage.getItem('notion_api_key');if(key)loadFromApi(key);else openApiModal();}
+function renderAll(){renderOverview();renderAccount();renderLimit();renderMonthly();renderDetail();}
+function renderOverview(){
+  const months=getMonths();
+  const now=new Date().toISOString().slice(0,7);
+  const cur=months.includes(now)?now:(months[months.length-1]||'');
+  const thisM=RD.filter(r=>r.month===cur);
+  const totalAll=RD.reduce((s,r)=>s+r.total,0);
+  const totalThis=thisM.reduce((s,r)=>s+r.total,0);
+  const cs={};thisM.forEach(r=>{cs[r.cat]=(cs[r.cat]||0)+r.total});
+  const topCat=Object.entries(cs).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('sumGrid').innerHTML=
+    '<div class="sum-card c-blue"><div class="sum-lbl">이번 달 합계</div><div class="sum-val">'+fmt(totalThis)+'<span>원</span></div><div class="sum-sub">'+cur.replace('-','년 ')+'월</div></div>'+
+    '<div class="sum-card c-teal"><div class="sum-lbl">이번 달 건수</div><div class="sum-val">'+thisM.length+'<span>건</span></div><div class="sum-sub">평균 '+fmt(thisM.length?totalThis/thisM.length:0)+'원/건</div></div>'+
+    '<div class="sum-card c-amber"><div class="sum-lbl">누적 총액</div><div class="sum-val">'+fmt(totalAll)+'<span>원</span></div><div class="sum-sub">'+RD.length+'건 전체</div></div>'+
+    '<div class="sum-card c-purple"><div class="sum-lbl">최다 지출 계정</div><div class="sum-val" style="font-size:15px">'+(topCat?topCat[0]:'-')+'</div><div class="sum-sub">'+(topCat?fmt(topCat[1])+'원':'')+'</div></div>';
+  const tot=Math.max(totalThis,1);
+  document.getElementById('overviewAcc').innerHTML=Object.keys(CAT_CLR).map(cat=>{
+    const a=cs[cat]||0,pct=Math.round(a/tot*100),c=clr(cat);
+    return '<div class="acc-item"><div class="acc-hdr"><div class="acc-name"><div class="dot" style="background:'+c.dot+'"></div>'+cat+'</div><div><div class="acc-amt">'+fmt(a)+'원</div><div class="acc-lbl">사용금액</div></div></div><div class="prog"><div class="prog-fill" style="width:'+pct+'%;background:'+c.dot+'"></div></div><div class="prog-pct" style="color:'+c.dot+'">'+pct+'%</div></div>';
+  }).join('');
+  const top5=[...thisM].sort((a,b)=>b.total-a.total).slice(0,5);
+  document.getElementById('topTbody').innerHTML=top5.map(r=>{const c=clr(r.cat);return'<tr><td class="dt">'+r.date+'</td><td>'+r.desc+'</td><td><span class="cat-tag" style="background:'+c.bg+';color:'+c.fg+'">'+r.cat+'</span></td><td class="amt-r">'+fmt(r.total)+'원</td></tr>';}).join('');
+}
+function renderAccount(){
+  const months=getMonths();
+  document.getElementById('accMonthFilter').innerHTML=['all',...months].map(m=>'<button class="fc'+(accMon===m?' on':'')+'" onclick="accMon=\''+m+'\';renderAccount()">'+( m==='all'?'전체':m.replace('-','년 ')+'월')+'</button>').join('');
+  const data=byMon(accMon),tot=Math.max(data.reduce((s,r)=>s+r.total,0),1);
+  const cs={},cc={};data.forEach(r=>{cs[r.cat]=(cs[r.cat]||0)+r.total;cc[r.cat]=(cc[r.cat]||0)+1});
+  document.getElementById('accList').innerHTML=Object.keys(CAT_CLR).map(cat=>{
+    const a=cs[cat]||0,cnt=cc[cat]||0,pct=Math.round(a/tot*100),c=clr(cat);
+    return '<div class="acc-item"><div class="acc-hdr"><div class="acc-name"><div class="dot" style="background:'+c.dot+'"></div>'+cat+'<span class="badge" style="background:'+c.bg+';color:'+c.fg+'">'+cnt+'건</span></div><div><div class="acc-amt">'+fmt(a)+'원</div><div class="acc-lbl">평균 '+fmt(cnt?a/cnt:0)+'원</div></div></div><div class="prog"><div class="prog-fill" style="width:'+pct+'%;background:'+c.dot+'"></div></div><div class="prog-pct" style="color:'+c.dot+'">'+pct+'%</div></div>';
+  }).join('');
+}
+function renderLimit(){
+  const months=getMonths();
+  document.getElementById('limMonthFilter').innerHTML=['all',...months].map(m=>'<button class="fc'+(limMon===m?' on':'')+'" onclick="limMon=\''+m+'\';renderLimit()">'+(m==='all'?'전체':m.replace('-','년 ')+'월')+'</button>').join('');
+  const data=byMon(limMon),cu={};data.forEach(r=>{cu[r.cat]=(cu[r.cat]||0)+r.total});
+  const grp={};LD.forEach(l=>{const k=l['카드명']||'법인카드';if(!grp[k])grp[k]=[];grp[k].push(l)});
+  document.getElementById('limGrid').innerHTML=Object.entries(grp).map(([card,lims])=>{
+    let tl=0,tu=0;
+    const rows=lims.map(l=>{
+      const lim=l['한도금액']||0,cat=l['계정항목']||'',used=cu[cat]||0;
+      const pct=Math.min(Math.round(used/Math.max(lim,1)*100),100);
+      const c=clr(cat);tl+=lim;tu+=used;
+      const bc=pct>80?'#D85A30':pct>60?'#BA7517':c.dot;
+      return '<div class="lim-row"><div class="lim-row-nm">'+(l['통합계정']||cat)+'</div><div class="lim-row-bar"><div class="prog"><div class="prog-fill" style="width:'+pct+'%;background:'+bc+'"></div></div><div style="font-size:10px;color:var(--txt3);text-align:right;margin-top:2px">'+pct+'%</div></div><div class="lim-row-r"><div class="lim-row-u">'+fmt(used)+'원</div><div class="lim-row-l">한도 '+fmt(lim)+'원</div></div></div>';
+    }).join('');
+    const cc=card==='주유카드'?'chip-fuel':'chip-corp';
+    return '<div class="lim-card"><div class="lim-hdr"><span class="chip '+cc+'">💳 '+card+'</span><div><div class="lim-remain">'+fmt(Math.max(tl-tu,0))+'원 남음</div><div class="lim-used">'+fmt(tu)+' / '+fmt(tl)+'원 사용</div></div></div>'+rows+'</div>';
+  }).join('');
+}
+function renderMonthly(){
+  const months=getMonths();
+  if(!months.length){document.getElementById('barChart').innerHTML='';return;}
+  const cats=Object.keys(CAT_CLR);
+  const maxV=Math.max(...months.map(m=>RD.filter(r=>r.month===m).reduce((s,r)=>s+r.total,0)),1);
+  document.getElementById('barChart').innerHTML=months.map(m=>{
+    const d=RD.filter(r=>r.month===m),cs={};cats.forEach(c=>cs[c]=0);d.forEach(r=>cs[r.cat]=(cs[r.cat]||0)+r.total);
+    const bars=cats.map(c=>{const h=Math.max(Math.round(cs[c]/maxV*140),cs[c]>0?3:0);return '<div class="bar" style="height:'+h+'px;background:'+clr(c).dot+'" title="'+c+': '+fmt(cs[c])+'원"></div>';}).join('');
+    return '<div class="bar-grp"><div class="bars">'+bars+'</div><span class="bar-lbl">'+m.slice(5)+'월</span></div>';
+  }).join('');
+  document.getElementById('chartLeg').innerHTML=cats.map(c=>'<div class="leg-item"><div class="leg-dot" style="background:'+clr(c).dot+'"></div>'+c+'</div>').join('');
+  document.getElementById('monthlyDetail').innerHTML=months.map(m=>{
+    const d=RD.filter(r=>r.month===m),tot=d.reduce((s,r)=>s+r.total,0),cs={};
+    d.forEach(r=>cs[r.cat]=(cs[r.cat]||0)+r.total);
+    const tags=Object.entries(cs).sort((a,b)=>b[1]-a[1]).map(([c,a])=>{const cl=clr(c);return'<span class="cat-tag" style="background:'+cl.bg+';color:'+cl.fg+';font-size:11px;padding:3px 9px">'+c+' '+fmt(a)+'원</span>';}).join('');
+    return '<div class="acc-item" style="margin-bottom:10px"><div class="acc-hdr"><div class="acc-name" style="font-size:14px">'+m.replace('-','년 ')+'월</div><div><div class="acc-amt">'+fmt(tot)+'원</div><div class="acc-lbl">'+d.length+'건</div></div></div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">'+tags+'</div></div>';
+  }).join('');
+}
+function renderDetail(){
+  const months=getMonths();
+  const cats=[...new Set(RD.map(r=>r.cat))];
+  document.getElementById('dtMonthFilter').innerHTML=['all',...months].map(m=>'<button class="fc'+(dtMon===m?' on':'')+'" onclick="dtMon=\''+m+'\';dtPage=1;renderDetail()">'+(m==='all'?'전체月':m.replace('-','.').slice(2))+'</button>').join('');
+  document.getElementById('dtCatFilter').innerHTML=['all',...cats].map(c=>'<button class="fc'+(dtCat===c?' on':'')+'" onclick="dtCat=\''+c.replace(/'/g,"\\'")+'\''+';dtPage=1;renderDetail()">'+(c==='all'?'전체분류':c)+'</button>').join('');
+  const q=(document.getElementById('srch').value||'').toLowerCase();
+  const f=RD.filter(r=>(dtMon==='all'||r.month===dtMon)&&(dtCat==='all'||r.cat===dtCat)&&(!q||r.desc.toLowerCase().includes(q)||r.cat.toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
+  const total=f.length,pages=Math.ceil(total/PS)||1;
+  if(dtPage>pages)dtPage=1;
+  const paged=f.slice((dtPage-1)*PS,dtPage*PS);
+  document.getElementById('dtTbody').innerHTML=paged.length?paged.map(r=>{const c=clr(r.cat);return'<tr><td class="dt">'+r.date+'</td><td>'+r.desc+'</td><td><span class="cat-tag" style="background:'+c.bg+';color:'+c.fg+'">'+r.cat+'</span></td><td class="amt-r">'+fmt(r.supply)+'</td><td class="amt-r" style="color:var(--txt3)">'+fmt(r.vat)+'</td><td class="amt-r" style="color:#0C447C">'+fmt(r.total)+'</td></tr>';}).join(''):'<tr><td colspan="6"><div class="empty"><div class="ico">🔍</div><p>해당 조건의 내역이 없습니다</p></div></td></tr>';
+  if(pages<=1){document.getElementById('pager').innerHTML='';return;}
+  let b='<button class="pg" onclick="if(dtPage>1){dtPage--;renderDetail()}">‹</button>';
+  for(let i=1;i<=pages;i++)b+='<button class="pg'+(dtPage===i?' on':'')+'" onclick="dtPage='+i+';renderDetail()">'+i+'</button>';
+  b+='<button class="pg" onclick="if(dtPage<'+pages+'){dtPage++;renderDetail()}">›</button>';
+  document.getElementById('pager').innerHTML=b;
+}
+window.addEventListener('load',function(){
+  var d=[{"date":"2026-01-01","supply":16364,"vat":1636,"cat":"차량비(법인카드)","desc":"875너3224 순찰차 요소수 보충","month":"2026-01","total":18000},{"date":"2026-01-01","supply":96367,"vat":9633,"cat":"비급여성","desc":"직원석식대","month":"2026-01","total":106000},{"date":"2026-01-02","supply":10909,"vat":1091,"cat":"소모품비","desc":"화일케이스 구입","month":"2026-01","total":12000},{"date":"2026-01-02","supply":4545,"vat":455,"cat":"소모품비","desc":"장갑 등 구입","month":"2026-01","total":5000},{"date":"2026-01-02","supply":90000,"vat":9000,"cat":"소모품비","desc":"헤드렌턴 구입","month":"2026-01","total":99000},{"date":"2026-01-05","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-01-05","supply":18182,"vat":1818,"cat":"도서인쇄비","desc":"월,분기,연간보고서 제본","month":"2026-01","total":20000},{"date":"2026-01-06","supply":54546,"vat":5454,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-01","total":60000},{"date":"2026-01-07","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-01-08","supply":97273,"vat":9727,"cat":"비급여성","desc":"직원회식","month":"2026-01","total":107000},{"date":"2026-01-08","supply":65000,"vat":0,"cat":"비급여성","desc":"직원회식","month":"2026-01","total":65000},{"date":"2026-01-09","supply":54545,"vat":5455,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":60000},{"date":"2026-01-09","supply":12272,"vat":1228,"cat":"소모품비","desc":"장갑 등 구입","month":"2026-01","total":13500},{"date":"2026-01-09","supply":80709,"vat":8071,"cat":"비급여성(생수)","desc":"생수 구입","month":"2026-01","total":88780},{"date":"2026-01-09","supply":78818,"vat":7882,"cat":"소모품비","desc":"휴지 구입","month":"2026-01","total":86700},{"date":"2026-01-09","supply":29818,"vat":2982,"cat":"비급여성","desc":"커피 구입","month":"2026-01","total":32800},{"date":"2026-01-12","supply":26000,"vat":2600,"cat":"소모품비","desc":"차걸레 등 구입","month":"2026-01","total":28600},{"date":"2026-01-13","supply":12727,"vat":1273,"cat":"소모품비","desc":"바구니 등 구입","month":"2026-01","total":14000},{"date":"2026-01-13","supply":12455,"vat":1245,"cat":"소모품비","desc":"식탁보 구입","month":"2026-01","total":13700},{"date":"2026-01-13","supply":35000,"vat":3500,"cat":"소모품비","desc":"방한귀덮개 등 구입","month":"2026-01","total":38500},{"date":"2026-01-15","supply":112727,"vat":11273,"cat":"비급여성","desc":"직원회식","month":"2026-01","total":124000},{"date":"2026-01-15","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-01-15","supply":63636,"vat":6364,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-01","total":70000},{"date":"2026-01-16","supply":8181,"vat":819,"cat":"소모품비","desc":"변기솔 등 구입","month":"2026-01","total":9000},{"date":"2026-01-16","supply":15000,"vat":1500,"cat":"소모품비","desc":"전선 컨넥터 구입","month":"2026-01","total":16500},{"date":"2026-01-19","supply":72000,"vat":7200,"cat":"소모품비","desc":"소화기 점검표 구입","month":"2026-01","total":79200},{"date":"2026-01-19","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-01-19","supply":122728,"vat":12272,"cat":"비급여성","desc":"직원회식","month":"2026-01","total":135000},{"date":"2026-01-20","supply":15000,"vat":1500,"cat":"소모품비","desc":"빗자루 세트 구입","month":"2026-01","total":16500},{"date":"2026-01-20","supply":10910,"vat":1090,"cat":"소모품비","desc":"랜선 구입","month":"2026-01","total":12000},{"date":"2026-01-20","supply":15453,"vat":1547,"cat":"소모품비","desc":"반투명 적층정리대 구입","month":"2026-01","total":17000},{"date":"2026-01-21","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-01-21","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-01","total":40000},{"date":"2026-01-27","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-01-27","supply":64164,"vat":6416,"cat":"비급여성","desc":"커피 구입","month":"2026-01","total":70580},{"date":"2026-01-27","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-01","total":40000},{"date":"2026-01-29","supply":25000,"vat":0,"cat":"소모품비","desc":"쥐약 구입","month":"2026-01","total":25000},{"date":"2026-01-29","supply":6000,"vat":0,"cat":"소모품비","desc":"쥐약 구입","month":"2026-01","total":6000},{"date":"2026-01-29","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-01","total":50000},{"date":"2026-01-29","supply":95452,"vat":9548,"cat":"비급여성","desc":"직원회식","month":"2026-01","total":105000},{"date":"2026-01-30","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-01","total":70000},{"date":"2026-02-02","supply":9091,"vat":909,"cat":"도서인쇄비","desc":"제본비(1월보)","month":"2026-02","total":10000},{"date":"2026-02-03","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-02","total":70000},{"date":"2026-02-05","supply":124545,"vat":12455,"cat":"비급여성","desc":"석식대","month":"2026-02","total":137000},{"date":"2026-02-09","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-02","total":70000},{"date":"2026-02-10","supply":168182,"vat":16818,"cat":"비급여성","desc":"직원회식","month":"2026-02","total":185000},{"date":"2026-02-10","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-02","total":50000},{"date":"2026-02-11","supply":11817,"vat":183,"cat":"소모품비","desc":"블라인드 등 구입","month":"2026-02","total":12000},{"date":"2026-02-11","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-02","total":70000},{"date":"2026-02-12","supply":25000,"vat":2500,"cat":"차량비(법인카드)","desc":"396거2246 업무차 타이어 펑크 수리","month":"2026-02","total":27500},{"date":"2026-02-12","supply":16364,"vat":1636,"cat":"차량비(법인카드)","desc":"875너3224 순찰차 요소수 보충","month":"2026-02","total":18000},{"date":"2026-02-12","supply":99999,"vat":10001,"cat":"비급여성","desc":"석식대","month":"2026-02","total":110000},{"date":"2026-02-12","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-02","total":40000},{"date":"2026-02-13","supply":12000,"vat":0,"cat":"소모품비","desc":"열쇠 복사","month":"2026-02","total":12000},{"date":"2026-02-13","supply":146654,"vat":14666,"cat":"소모품비","desc":"화이트보드 등 구입","month":"2026-02","total":161320},{"date":"2026-02-19","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-02","total":70000},{"date":"2026-02-19","supply":19998,"vat":2002,"cat":"소모품비","desc":"휴지통 등 구입","month":"2026-02","total":22000},{"date":"2026-02-19","supply":79455,"vat":7945,"cat":"비급여성(생수)","desc":"생수 구입","month":"2026-02","total":87400},{"date":"2026-02-20","supply":107500,"vat":10750,"cat":"소모품비","desc":"무선차임벨 등 구입","month":"2026-02","total":118250},{"date":"2026-02-20","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-02","total":40000},{"date":"2026-02-20","supply":8100,"vat":810,"cat":"소모품비","desc":"원형자석(화이트보트용) 구입","month":"2026-02","total":8910},{"date":"2026-02-24","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-02","total":70000},{"date":"2026-02-25","supply":109997,"vat":11003,"cat":"비급여성","desc":"석식대","month":"2026-02","total":121000},{"date":"2026-02-25","supply":37273,"vat":3727,"cat":"비급여성","desc":"중식대","month":"2026-02","total":41000},{"date":"2026-02-26","supply":81818,"vat":8182,"cat":"비급여성","desc":"직원회식","month":"2026-02","total":90000},{"date":"2026-02-26","supply":63636,"vat":6364,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-02","total":70000},{"date":"2026-02-27","supply":16850,"vat":0,"cat":"소모품비","desc":"종량제봉투 구입","month":"2026-02","total":16850},{"date":"2026-02-27","supply":87000,"vat":8700,"cat":"비급여성","desc":"커피 구입","month":"2026-02","total":95700},{"date":"2026-02-27","supply":127491,"vat":12749,"cat":"소모품비","desc":"화장지 등 구입","month":"2026-02","total":140240},{"date":"2026-03-03","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-03","supply":9091,"vat":909,"cat":"도서인쇄비","desc":"제본비(2월보)","month":"2026-03","total":10000},{"date":"2026-03-03","supply":41500,"vat":4150,"cat":"소모품비","desc":"다라이 등 구입","month":"2026-03","total":45650},{"date":"2026-03-04","supply":122727,"vat":12273,"cat":"비급여성","desc":"직원회식","month":"2026-03","total":135000},{"date":"2026-03-05","supply":54545,"vat":5455,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-03","total":60000},{"date":"2026-03-05","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-06","supply":134000,"vat":13400,"cat":"소모품비","desc":"사다리 등 구입","month":"2026-03","total":147400},{"date":"2026-03-10","supply":40000,"vat":4000,"cat":"비급여성","desc":"중식대","month":"2026-03","total":44000},{"date":"2026-03-10","supply":72727,"vat":7273,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":80000},{"date":"2026-03-11","supply":50546,"vat":5054,"cat":"소모품비","desc":"타월 구입","month":"2026-03","total":55600},{"date":"2026-03-11","supply":21382,"vat":2138,"cat":"소모품비","desc":"물티슈 구입","month":"2026-03","total":23520},{"date":"2026-03-12","supply":146363,"vat":14637,"cat":"비급여성","desc":"석식대","month":"2026-03","total":161000},{"date":"2026-03-12","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-13","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-03","total":40000},{"date":"2026-03-16","supply":29997,"vat":3003,"cat":"소모품비","desc":"스테인리스 신축봉 등 구입","month":"2026-03","total":33000},{"date":"2026-03-16","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-17","supply":79455,"vat":7945,"cat":"비급여성(생수)","desc":"생수 구입","month":"2026-03","total":87400},{"date":"2026-03-18","supply":54545,"vat":5455,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-03","total":60000},{"date":"2026-03-18","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-19","supply":11364,"vat":1136,"cat":"소모품비","desc":"드레싱밴드 구입","month":"2026-03","total":12500},{"date":"2026-03-19","supply":113635,"vat":11365,"cat":"비급여성","desc":"직원회식","month":"2026-03","total":125000},{"date":"2026-03-19","supply":122800,"vat":12280,"cat":"차량비(법인카드)","desc":"875너3224 순찰차 엔진오일 교환","month":"2026-03","total":135080},{"date":"2026-03-20","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-24","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-24","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-03","total":40000},{"date":"2026-03-25","supply":121817,"vat":12183,"cat":"비급여성","desc":"석식대","month":"2026-03","total":134000},{"date":"2026-03-27","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-03","total":70000},{"date":"2026-03-27","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-03","total":50000},{"date":"2026-03-31","supply":129090,"vat":12910,"cat":"비급여성","desc":"석식대","month":"2026-03","total":142000},{"date":"2026-03-31","supply":40000,"vat":4000,"cat":"소모품비","desc":"2단 사다리 구입","month":"2026-03","total":44000},{"date":"2026-03-31","supply":23821,"vat":2379,"cat":"소모품비","desc":"종이컵홈더 등 구입","month":"2026-03","total":26200},{"date":"2026-04-01","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-01","supply":31636,"vat":3164,"cat":"비급여성","desc":"커피 구입","month":"2026-04","total":34800},{"date":"2026-04-02","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-04","total":50000},{"date":"2026-04-06","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-07","supply":104545,"vat":10455,"cat":"비급여성","desc":"직원회식","month":"2026-04","total":115000},{"date":"2026-04-08","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-10","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-10","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-04","total":50000},{"date":"2026-04-14","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-15","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-04","total":50000},{"date":"2026-04-17","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-17","supply":29000,"vat":2900,"cat":"비급여성","desc":"커피 구입","month":"2026-04","total":31900},{"date":"2026-04-20","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-20","supply":6500,"vat":650,"cat":"소모품비","desc":"양면 테이프 구입","month":"2026-04","total":7150},{"date":"2026-04-21","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-04","total":50000},{"date":"2026-04-22","supply":36364,"vat":3636,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-04","total":40000},{"date":"2026-04-22","supply":115453,"vat":11547,"cat":"비급여성","desc":"직원회식","month":"2026-04","total":127000},{"date":"2026-04-22","supply":30000,"vat":0,"cat":"비급여성","desc":"중식비","month":"2026-04","total":30000},{"date":"2026-04-23","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-23","supply":79455,"vat":7945,"cat":"비급여성(생수)","desc":"생수 구입","month":"2026-04","total":87400},{"date":"2026-04-23","supply":10454,"vat":1046,"cat":"소모품비","desc":"펄일자빗 등 구입","month":"2026-04","total":11500},{"date":"2026-04-29","supply":63636,"vat":6364,"cat":"차량비","desc":"875너3224 순찰차 주유","month":"2026-04","total":70000},{"date":"2026-04-29","supply":45455,"vat":4545,"cat":"차량비","desc":"396거2246 업무차 주유","month":"2026-04","total":50000},{"date":"2026-04-29","supply":79455,"vat":7945,"cat":"비급여성(생수)","desc":"생수 구입","month":"2026-04","total":87400},{"date":"2026-04-29","supply":10454,"vat":1046,"cat":"소모품비","desc":"양면 테이프 등 구입","month":"2026-04","total":11500}];
+  RD=d;LD=BUILT_LIM;updTime();renderAll();
+  var key=localStorage.getItem('notion_api_key');
+  if(key)loadFromApi(key);
+});
+
+</script>
+</body>
+</html>
