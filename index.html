@@ -107,30 +107,38 @@ tbody tr:hover td{background:var(--sky50)}
 <body>
 
 <div id="apiModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,20px)) 16px;box-sizing:border-box;overflow-y:auto" onclick="if(event.target===this)closeApiModal()">
-  <div style="background:#fff;border-radius:20px;padding:26px 22px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.2)" onclick="event.stopPropagation()">
+  <div style="background:#fff;border-radius:20px;padding:26px 22px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2)" onclick="event.stopPropagation()">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
       <div style="width:38px;height:38px;background:linear-gradient(135deg,#378ADD,#185FA5);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M19.07 19.07A10 10 0 0 0 4.93 4.93"/></svg>
       </div>
       <div>
-        <div style="font-size:16px;font-weight:800;color:#0C3A6A">노션 API 키 설정</div>
+        <div style="font-size:16px;font-weight:800;color:#0C3A6A">설정</div>
         <div style="font-size:11px;color:#6B7E99">한 번 입력하면 브라우저에 저장됩니다</div>
       </div>
     </div>
-    <div style="background:#EEF5FF;border-radius:11px;padding:13px;margin-bottom:14px;font-size:12px;color:#3D4F68;line-height:1.8">
-      <b style="color:#0C447C">발급 방법</b><br>
-      ① <a href="https://www.notion.so/profile/integrations" target="_blank" style="color:#378ADD">notion.so/profile/integrations</a> 접속<br>
-      ② 새 Integration 만들기 &rarr; 저장<br>
-      ③ 법인카드-DASHBORD 페이지 &rarr; ··· &rarr; 연결<br>
-      ④ 액세스 토큰 &rarr; <b>복사</b> 버튼 클릭
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">Cloudflare Worker URL</label>
+      <input id="cfgWorkerUrl" type="url" placeholder="https://notion-proxy.shinfund.workers.dev"
+        style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
+        oninput="this.style.borderColor='#378ADD'">
     </div>
-    <input id="apiInput" type="password" placeholder="ntn_xxxx 또는 secret_xxxx..."
-      style="width:100%;padding:12px 14px;border:1.5px solid #D0E4F8;border-radius:12px;font-size:16px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
-      oninput="this.style.borderColor='#378ADD'"
-      onkeydown="if(event.key==='Enter')saveKey()">
-    <p id="keyErr" style="font-size:12px;color:#D85A30;margin:6px 0 0;display:none">올바른 키 형식이 아닙니다 (ntn_ 또는 secret_로 시작)</p>
-    <div style="display:flex;gap:9px;margin-top:13px">
-      <button onclick="closeApiModal()" style="flex:1;padding:12px;border:1.5px solid #D0E4F8;border-radius:12px;background:#fff;color:#6B7E99;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">나중에</button>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">사용내역 DB ID</label>
+      <input id="cfgDbId" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
+        oninput="this.style.borderColor='#378ADD'">
+      <p style="font-size:11px;color:#6B7E99;margin-top:3px">법인카드 사용내역 노션 DB ID</p>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">한도 DB ID <span style="font-weight:400;color:#9ab">(선택)</span></label>
+      <input id="cfgLimId" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
+        oninput="this.style.borderColor='#378ADD'">
+      <p style="font-size:11px;color:#6B7E99;margin-top:3px">법인카드 한도 노션 DB ID (없으면 내장 데이터 사용)</p>
+    </div>
+    <div style="display:flex;gap:9px;margin-top:16px">
+      <button onclick="closeApiModal()" style="flex:1;padding:12px;border:1.5px solid #D0E4F8;border-radius:12px;background:#fff;color:#6B7E99;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">취소</button>
       <button onclick="saveKey()" style="flex:2;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#378ADD,#185FA5);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">저장 후 로드</button>
     </div>
   </div>
@@ -158,7 +166,7 @@ tbody tr:hover td{background:var(--sky50)}
       </div>
     </div>
     <div class="hdr-right">
-      <button class="btn-api" onclick="openApiModal()">🔑 API</button>
+      <button class="btn-api" onclick="openApiModal()">⚙ 설정</button>
       <button class="btn-sync" onclick="syncData()">
         <svg id="syncIco" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
         새로고침
@@ -222,10 +230,11 @@ tbody tr:hover td{background:var(--sky50)}
 
 <script>
 
-const NOTION_DB='2f559c8c9c0a804a9201e861453d6b48';
-const NOTION_LIM='2f659c8c9c0a80c5a982000b040b0995';
+// ── 설정: localStorage에서 로드 (하드코딩 없음) ──
 const NOTION_VER='2022-06-28';
-const WORKER_URL='https://notion-proxy.shinfund.workers.dev';
+let WORKER_URL = localStorage.getItem('card_workerUrl') || 'https://notion-proxy.shinfund.workers.dev';
+let NOTION_DB  = localStorage.getItem('card_dbId')      || '';
+let NOTION_LIM = localStorage.getItem('card_dbLimId')   || '';
 const CAT_CLR={
   '비급여성':{bg:'#E6F1FB',fg:'#0C447C',dot:'#378ADD'},
   '비급여성(생수)':{bg:'#E1F5EE',fg:'#085041',dot:'#1D9E75'},
@@ -289,27 +298,38 @@ function goTab(id,btn){
   else if(id==='monthly'){renderMonthly();}
   else if(id==='overview'){renderOverview();}
 }
-function openApiModal(){var m=document.getElementById('apiModal');m.style.display='flex';document.body.style.overflow='hidden';}
+function openApiModal(){
+  document.getElementById('cfgWorkerUrl').value = WORKER_URL;
+  document.getElementById('cfgDbId').value      = NOTION_DB;
+  document.getElementById('cfgLimId').value     = NOTION_LIM;
+  var m=document.getElementById('apiModal');m.style.display='flex';document.body.style.overflow='hidden';
+}
 function closeApiModal(){var m=document.getElementById('apiModal');m.style.display='none';document.body.style.overflow='';}
 function saveKey(){
-  const key=document.getElementById('apiInput').value.trim();
-  const err=document.getElementById('keyErr');
-  if(!key||(!key.startsWith('ntn_')&&!key.startsWith('secret_'))){err.style.display='block';return;}
-  err.style.display='none';
-  localStorage.setItem('notion_api_key',key);
+  const wu = document.getElementById('cfgWorkerUrl').value.trim();
+  const db = document.getElementById('cfgDbId').value.trim();
+  const lm = document.getElementById('cfgLimId').value.trim();
+  if(!db){ alert('사용내역 DB ID를 입력해주세요.'); return; }
+  WORKER_URL = wu || 'https://notion-proxy.shinfund.workers.dev';
+  NOTION_DB  = db;
+  NOTION_LIM = lm;
+  localStorage.setItem('card_workerUrl', WORKER_URL);
+  localStorage.setItem('card_dbId',      NOTION_DB);
+  localStorage.setItem('card_dbLimId',   NOTION_LIM);
   closeApiModal();
-  loadFromApi(key);
+  loadFromApi();
 }
-async function queryDB(dbId,key,cursor){
+async function queryDB(dbId,_key,cursor){
+  if(!dbId) throw new Error('DB_ID_MISSING');
   const body={page_size:100,sorts:[{property:'사용일자',direction:'ascending'}]};
   if(cursor)body.start_cursor=cursor;
-  const r=await fetch(WORKER_URL+'/v1/databases/'+dbId+'/query',{method:'POST',headers:{'Authorization':'Bearer '+key,'Notion-Version':NOTION_VER,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const r=await fetch(WORKER_URL+'/v1/databases/'+dbId+'/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok)throw new Error('API '+r.status);
   return r.json();
 }
-async function fetchAll(dbId,key){
+async function fetchAll(dbId){
   let rows=[],cur=null,p=0;
-  while(p<100){const d=await queryDB(dbId,key,cur);rows=rows.concat(d.results||[]);if(d.has_more&&d.next_cursor){cur=d.next_cursor;p++;}else break;}
+  while(p<100){const d=await queryDB(dbId,null,cur);rows=rows.concat(d.results||[]);if(d.has_more&&d.next_cursor){cur=d.next_cursor;p++;}else break;}
   return rows;
 }
 function parseRow(pg){
@@ -325,11 +345,12 @@ function parseLim(pg){
   return{통합계정:t('통합계정')||t('Name'),한도금액:p['한도금액']?.number||0,계정항목:p['계정항목']?.select?.name||'',카드명:p['카드명']?.select?.name||''};
 }
 let _authModalShown=false;
-async function loadFromApi(key){
+async function loadFromApi(){
+  if(!NOTION_DB){ openApiModal(); return; }
   setSync(true);
   document.getElementById('syncTime').innerHTML='<span style="color:#378ADD">노션 API 로드 중...</span>';
   try{
-    const[uRows,lRows]=await Promise.all([fetchAll(NOTION_DB,key),fetchAll(NOTION_LIM,key).catch(()=>[])]);
+    const[uRows,lRows]=await Promise.all([fetchAll(NOTION_DB),NOTION_LIM?fetchAll(NOTION_LIM).catch(()=>[]):Promise.resolve([])]);
     const parsed=uRows.map(parseRow).filter(Boolean);
     if(parsed.length>0){RD=parsed;updTime();toast('노션 API 로드 완료 ('+RD.length+'건)');_authModalShown=false;}
     else{if(!RD.length)RD=BUILT_RD;updTime();toast('데이터 없음 · 내장 데이터 유지');}
@@ -340,17 +361,17 @@ async function loadFromApi(key){
     if(!RD.length)RD=BUILT_RD;
     if(!LD.length)LD=BUILT_LIM;
     updTime();
-    if((e.message.includes('401')||e.message.includes('403'))&&!_authModalShown){
+    if(e.message==='DB_ID_MISSING'){ openApiModal(); }
+    else if((e.message.includes('401')||e.message.includes('403'))&&!_authModalShown){
       _authModalShown=true;
-      toast('API 키 오류 · 다시 확인해주세요');
-      localStorage.removeItem('notion_api_key');
+      toast('인증 오류 · 설정을 확인해주세요');
       openApiModal();
     }
     else{toast('연결 실패 · 내장 데이터 유지');}
     renderAll();
   }finally{setSync(false);}
 }
-function syncData(){const key=localStorage.getItem('notion_api_key');if(key)loadFromApi(key);else openApiModal();}
+function syncData(){ loadFromApi(); }
 function setAccMon(m){accMon=m;renderAccount();}
 function setLimMon(m){limMon=m;renderLimit();}
 function setDtMon(m){dtMon=m;dtPage=1;renderDetail();}
@@ -639,9 +660,12 @@ const BUILT_RD=[
 ];
 document.addEventListener('DOMContentLoaded',function(){
   RD=BUILT_RD;LD=BUILT_LIM;renderAll();
-  document.getElementById('syncTime').textContent='미리보기 데모 데이터 (흥해터널 2026-04) — 노션 연동 시 실제 데이터로 교체됩니다';
-  const key=localStorage.getItem('notion_api_key');
-  if(key)loadFromApi(key);
+  if(NOTION_DB){
+    document.getElementById('syncTime').textContent='설정 완료. 새로고침 버튼으로 데이터를 불러오세요.';
+    loadFromApi();
+  } else {
+    document.getElementById('syncTime').textContent='미리보기 데모 데이터 — ⚙ 설정 버튼을 눌러 DB ID를 입력하세요.';
+  }
 });
 
 </script>
