@@ -273,12 +273,19 @@ function setSync(on){document.getElementById('syncIco').classList.toggle('spinni
 function updTime(){document.getElementById('syncTime').textContent='마지막 업데이트: '+new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
 function getMonths(){return MONTHS;}
 function byMon(m){return m==='all'?RD:RD.filter(r=>r.month===m)}
+function curMonth(){const now=new Date().toISOString().slice(0,7);return MONTHS.includes(now)?now:(MONTHS[MONTHS.length-1]||'all');}
 function goTab(id,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   const pid='p'+id.charAt(0).toUpperCase()+id.slice(1);
   document.getElementById(pid).classList.add('on');
+  const cm=curMonth();
+  if(id==='account'){accMon=cm;renderAccount();}
+  else if(id==='limit'){limMon=cm;renderLimit();}
+  else if(id==='detail'){dtMon=cm;dtCat='all';dtPage=1;renderDetail();}
+  else if(id==='monthly'){renderMonthly();}
+  else if(id==='overview'){renderOverview();}
 }
 function openApiModal(){var m=document.getElementById('apiModal');m.style.display='flex';document.body.style.overflow='hidden';}
 function closeApiModal(){var m=document.getElementById('apiModal');m.style.display='none';document.body.style.overflow='';}
@@ -347,7 +354,7 @@ function setLimMon(m){limMon=m;renderLimit();}
 function setDtMon(m){dtMon=m;dtPage=1;renderDetail();}
 function setDtCat(c){dtCat=c;dtPage=1;renderDetail();}
 function buildMonthFilter(elId,curMon,onChange){
-  document.getElementById(elId).innerHTML=['all',...MONTHS].map(m=>'<button class="fc'+(curMon===m?' on':'')+'" onclick="'+onChange+'(\''+m+'\')">'+( m==='all'?'전체':m.replace('-','년 ')+'월')+'</button>').join('');
+  document.getElementById(elId).innerHTML=['all',...[...MONTHS].reverse()].map(m=>'<button class="fc'+(curMon===m?' on':'')+'" onclick="'+onChange+'(\''+m+'\')">'+( m==='all'?'전체':m.replace('-','년 ')+'월')+'</button>').join('');
 }
 function renderAll(){cacheMonths();renderOverview();renderAccount();renderLimit();renderMonthly();renderDetail();}
 function renderOverview(){
