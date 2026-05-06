@@ -19,7 +19,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.hdr{background:#ffffff;padding-top:max(14px,env(safe-area-inset-top));position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);box-shadow:0 3px 12px rgba(55,138,221,.12)}.hdr-inner{max-width:1200px;margin:0 auto;padding:0 16px}
+.hdr{background:#ffffff;padding-top:max(14px,env(safe-area-inset-top,0px));position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);box-shadow:0 3px 12px rgba(55,138,221,.12)}.hdr-inner{max-width:1200px;margin:0 auto;padding:0 16px}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .logo{display:flex;align-items:center;gap:9px}
 .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#378ADD,#185FA5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -230,9 +230,48 @@ tbody tr:hover td{background:var(--sky50)}
 
 <script>
 
-// ── 설정: localStorage에서 로드 (하드코딩 없음) ──
+// ── 데모 데이터: 노션 API 키 등록 전 미리보기용 시드 ──
+// (BUILT_RD를 최상단에 배치해 loadFromApi 폴백에서 항상 접근 가능하도록 함)
+const BUILT_RD=[
+  {date:'2026-04-01',month:'2026-04',desc:'875너3224 순찰차 요소수 보충',cat:'차량비(법인카드)',supply:17273,vat:1727,total:19000},
+  {date:'2026-04-01',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72728,vat:7272,total:80000},
+  {date:'2026-04-01',month:'2026-04',desc:'커피 구입',cat:'비급여성',supply:31636,vat:3164,total:34800},
+  {date:'2026-04-02',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:45455,vat:4545,total:50000},
+  {date:'2026-04-02',month:'2026-04',desc:'제본비(3월,1분기)',cat:'도서인쇄비',supply:18182,vat:1818,total:20000},
+  {date:'2026-04-06',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:71971,vat:7197,total:79168},
+  {date:'2026-04-07',month:'2026-04',desc:'직원회식',cat:'비급여성',supply:104545,vat:10455,total:115000},
+  {date:'2026-04-08',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
+  {date:'2026-04-10',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72728,vat:7272,total:80000},
+  {date:'2026-04-10',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:54546,vat:5454,total:60000},
+  {date:'2026-04-14',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72728,vat:7272,total:80000},
+  {date:'2026-04-15',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:54546,vat:5454,total:60000},
+  {date:'2026-04-17',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
+  {date:'2026-04-17',month:'2026-04',desc:'커피 구입',cat:'비급여성',supply:29000,vat:2900,total:31900},
+  {date:'2026-04-20',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
+  {date:'2026-04-20',month:'2026-04',desc:'양면 테이프 구입',cat:'소모품비',supply:6500,vat:650,total:7150},
+  {date:'2026-04-21',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:45455,vat:4545,total:50000},
+  {date:'2026-04-22',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:36364,vat:3636,total:40000},
+  {date:'2026-04-22',month:'2026-04',desc:'직원회식',cat:'비급여성',supply:115453,vat:11547,total:127000},
+  {date:'2026-04-22',month:'2026-04',desc:'중식비',cat:'비급여성',supply:30000,vat:0,total:30000},
+  {date:'2026-04-22',month:'2026-04',desc:'396거2246 업무차 엔진오일 교환',cat:'차량비(법인카드)',supply:134545,vat:13455,total:148000},
+  {date:'2026-04-23',month:'2026-04',desc:'생수 구입',cat:'비급여성(생수)',supply:79455,vat:7945,total:87400},
+  {date:'2026-04-23',month:'2026-04',desc:'펄일자빗 등 구입',cat:'소모품비',supply:10454,vat:1046,total:11500},
+  {date:'2026-04-23',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:81818,vat:8182,total:90000},
+  {date:'2026-04-27',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:81818,vat:8182,total:90000},
+  {date:'2026-04-28',month:'2026-04',desc:'절연장갑(저압용) 구입',cat:'소모품비',supply:104000,vat:10400,total:114400},
+  {date:'2026-04-29',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:54546,vat:5454,total:60000},
+  {date:'2026-04-29',month:'2026-04',desc:'석식비',cat:'비급여성',supply:140000,vat:0,total:140000},
+  {date:'2026-04-29',month:'2026-04',desc:'석식비',cat:'비급여성',supply:50000,vat:0,total:50000},
+  {date:'2026-04-29',month:'2026-04',desc:'석식비',cat:'비급여성',supply:54546,vat:5454,total:60000},
+  {date:'2026-04-30',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
+  {date:'2026-04-30',month:'2026-04',desc:'커피 등 구입',cat:'비급여성',supply:69682,vat:6968,total:76650},
+  {date:'2026-04-30',month:'2026-04',desc:'휴지 등 구입',cat:'소모품비',supply:116364,vat:11636,total:128000},
+  {date:'2026-04-30',month:'2026-04',desc:'볼펜 등 구입',cat:'소모품비',supply:40910,vat:4090,total:45000},
+];
+
+// ── 설정: localStorage에서 로드 (기본 Worker URL 하드코딩 제거) ──
 const NOTION_VER='2022-06-28';
-let WORKER_URL = localStorage.getItem('card_workerUrl') || 'https://notion-proxy.shinfund.workers.dev';
+let WORKER_URL = localStorage.getItem('card_workerUrl') || '';
 let NOTION_DB  = localStorage.getItem('card_dbId')      || '';
 let NOTION_LIM = localStorage.getItem('card_dbLimId')   || '';
 const CAT_CLR={
@@ -269,7 +308,7 @@ function unifiedAccount(r){
   if(cat==='차량비'){
     if(/순찰차|875너/.test(desc))return '차량비(점검차)';
     if(/업무차|396거/.test(desc))return '차량비(업무차)';
-    return null;
+    return '차량비(점검차)'; // 매칭 실패 시 점검차 기본값 (데이터 유실 방지)
   }
   if(cat==='비급여성'){
     if(/회식/.test(desc))return '직원회식';
@@ -282,9 +321,8 @@ function unifiedAccount(r){
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
 function setSync(on){document.getElementById('syncIco').classList.toggle('spinning',on)}
 function updTime(){document.getElementById('syncTime').textContent='마지막 업데이트: '+new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
-function getMonths(){return MONTHS;}
-function byMon(m){return m==='all'?RD:RD.filter(r=>r.month===m)}
-function curMonth(){const now=new Date().toISOString().slice(0,7);return MONTHS.includes(now)?now:(MONTHS[MONTHS.length-1]||'all');}
+function byMon(m){return m==='all'||m===''?RD:RD.filter(r=>r.month===m)}
+function curMonth(){if(!MONTHS.length)return '';const now=new Date().toISOString().slice(0,7);return MONTHS.includes(now)?now:(MONTHS[MONTHS.length-1]||'');}
 function goTab(id,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
@@ -309,8 +347,9 @@ function saveKey(){
   const wu = document.getElementById('cfgWorkerUrl').value.trim();
   const db = document.getElementById('cfgDbId').value.trim();
   const lm = document.getElementById('cfgLimId').value.trim();
+  if(!wu){ alert('Cloudflare Worker URL을 입력해주세요.'); return; }
   if(!db){ alert('사용내역 DB ID를 입력해주세요.'); return; }
-  WORKER_URL = wu || 'https://notion-proxy.shinfund.workers.dev';
+  WORKER_URL = wu;
   NOTION_DB  = db;
   NOTION_LIM = lm;
   localStorage.setItem('card_workerUrl', WORKER_URL);
@@ -329,7 +368,7 @@ async function queryDB(dbId,_key,cursor){
 }
 async function fetchAll(dbId){
   let rows=[],cur=null,p=0;
-  while(p<100){const d=await queryDB(dbId,null,cur);rows=rows.concat(d.results||[]);if(d.has_more&&d.next_cursor){cur=d.next_cursor;p++;}else break;}
+  while(p<500){const d=await queryDB(dbId,null,cur);rows=rows.concat(d.results||[]);if(d.has_more&&d.next_cursor){cur=d.next_cursor;p++;}else break;}
   return rows;
 }
 function parseRow(pg){
@@ -344,7 +383,6 @@ function parseLim(pg){
   const t=k=>p[k]?.title?.[0]?.plain_text||p[k]?.rich_text?.[0]?.plain_text||'';
   return{통합계정:t('통합계정')||t('Name'),한도금액:p['한도금액']?.number||0,계정항목:p['계정항목']?.select?.name||'',카드명:p['카드명']?.select?.name||''};
 }
-let _authModalShown=false;
 async function loadFromApi(){
   if(!NOTION_DB){ openApiModal(); return; }
   setSync(true);
@@ -352,7 +390,7 @@ async function loadFromApi(){
   try{
     const[uRows,lRows]=await Promise.all([fetchAll(NOTION_DB),NOTION_LIM?fetchAll(NOTION_LIM).catch(()=>[]):Promise.resolve([])]);
     const parsed=uRows.map(parseRow).filter(Boolean);
-    if(parsed.length>0){RD=parsed;updTime();toast('노션 API 로드 완료 ('+RD.length+'건)');_authModalShown=false;}
+    if(parsed.length>0){RD=parsed;updTime();toast('노션 API 로드 완료 ('+RD.length+'건)');}
     else{if(!RD.length)RD=BUILT_RD;updTime();toast('데이터 없음 · 내장 데이터 유지');}
     const pl=lRows.map(parseLim).filter(r=>r.통합계정);
     if(pl.length>0)LD=pl;else if(!LD.length)LD=BUILT_LIM;
@@ -362,8 +400,7 @@ async function loadFromApi(){
     if(!LD.length)LD=BUILT_LIM;
     updTime();
     if(e.message==='DB_ID_MISSING'){ openApiModal(); }
-    else if((e.message.includes('401')||e.message.includes('403'))&&!_authModalShown){
-      _authModalShown=true;
+    else if(e.message.includes('401')||e.message.includes('403')){
       toast('인증 오류 · 설정을 확인해주세요');
       openApiModal();
     }
@@ -500,7 +537,7 @@ function renderLimit(){
   rowInfo.forEach(r=>{
     const remain=r.lim-r.used;
     const pct=Math.round(r.used/Math.max(r.lim,1)*100);
-    const barClr=pct>100?'#D85A30':pct>80?'#D85A30':pct>60?'#BA7517':'#378ADD';
+    const barClr=pct>100?'#9B1C1C':pct>80?'#D85A30':pct>60?'#BA7517':'#378ADD';
     const barW=Math.min(pct,100);
 
     if(r.cat!==prevCat && prevCat){
@@ -608,9 +645,11 @@ function renderMonthly(){
 function renderDetail(){
   buildMonthFilter('dtMonthFilter',dtMon,'setDtMon');
   const cats=[...new Set(RD.map(r=>r.cat))];
-  document.getElementById('dtCatFilter').innerHTML=['all',...cats].map(c=>'<button class="fc'+(dtCat===c?' on':'')+'" onclick="setDtCat(\''+c.replace(/'/g,"\\'")+'\')">'+(c==='all'?'전체분류':esc(c))+'</button>').join('');
+  const catBar=document.getElementById('dtCatFilter');
+  catBar.innerHTML=['all',...cats].map(c=>'<button class="fc'+(dtCat===c?' on':'')+'" data-cat="'+esc(c)+'">'+(c==='all'?'전체분류':esc(c))+'</button>').join('');
+  catBar.onclick=function(e){const b=e.target.closest('button[data-cat]');if(!b)return;const v=b.dataset.cat;setDtCat(v==='all'?'all':v);};
   const q=(document.getElementById('srch').value||'').toLowerCase();
-  const f=RD.filter(r=>(dtMon==='all'||r.month===dtMon)&&(dtCat==='all'||r.cat===dtCat)&&(!q||r.desc.toLowerCase().includes(q)||r.cat.toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
+  const f=RD.filter(r=>(dtMon===''||dtMon==='all'||r.month===dtMon)&&(dtCat==='all'||r.cat===dtCat)&&(!q||r.desc.toLowerCase().includes(q)||r.cat.toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
   const total=f.length,pages=Math.ceil(total/PS)||1;
   if(dtPage>pages)dtPage=1;
   const paged=f.slice((dtPage-1)*PS,dtPage*PS);
@@ -621,50 +660,14 @@ function renderDetail(){
   b+='<button class="pg" onclick="if(dtPage<'+pages+'){dtPage++;renderDetail()}">›</button>';
   document.getElementById('pager').innerHTML=b;
 }
-// 데모 데이터: 노션 API 키 등록 전 미리보기용 시드 (흥해터널 2026-04 실제 데이터)
-const BUILT_RD=[
-  {date:'2026-04-01',month:'2026-04',desc:'875너3224 순찰차 요소수 보충',cat:'차량비(법인카드)',supply:17273,vat:1727,total:19000},
-  {date:'2026-04-01',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72728,vat:7272,total:80000},
-  {date:'2026-04-01',month:'2026-04',desc:'커피 구입',cat:'비급여성',supply:31636,vat:3164,total:34800},
-  {date:'2026-04-02',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:45455,vat:4545,total:50000},
-  {date:'2026-04-02',month:'2026-04',desc:'제본비(3월,1분기)',cat:'도서인쇄비',supply:18182,vat:1818,total:20000},
-  {date:'2026-04-06',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:71971,vat:7197,total:79168},
-  {date:'2026-04-07',month:'2026-04',desc:'직원회식',cat:'비급여성',supply:104545,vat:10455,total:115000},
-  {date:'2026-04-08',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
-  {date:'2026-04-10',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72728,vat:7272,total:80000},
-  {date:'2026-04-10',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:54546,vat:5454,total:60000},
-  {date:'2026-04-14',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72728,vat:7272,total:80000},
-  {date:'2026-04-15',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:54546,vat:5454,total:60000},
-  {date:'2026-04-17',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
-  {date:'2026-04-17',month:'2026-04',desc:'커피 구입',cat:'비급여성',supply:29000,vat:2900,total:31900},
-  {date:'2026-04-20',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
-  {date:'2026-04-20',month:'2026-04',desc:'양면 테이프 구입',cat:'소모품비',supply:6500,vat:650,total:7150},
-  {date:'2026-04-21',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:45455,vat:4545,total:50000},
-  {date:'2026-04-22',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:36364,vat:3636,total:40000},
-  {date:'2026-04-22',month:'2026-04',desc:'직원회식',cat:'비급여성',supply:115453,vat:11547,total:127000},
-  {date:'2026-04-22',month:'2026-04',desc:'중식비',cat:'비급여성',supply:30000,vat:0,total:30000},
-  {date:'2026-04-22',month:'2026-04',desc:'396거2246 업무차 엔진오일 교환',cat:'차량비(법인카드)',supply:134545,vat:13455,total:148000},
-  {date:'2026-04-23',month:'2026-04',desc:'생수 구입',cat:'비급여성(생수)',supply:79455,vat:7945,total:87400},
-  {date:'2026-04-23',month:'2026-04',desc:'펄일자빗 등 구입',cat:'소모품비',supply:10454,vat:1046,total:11500},
-  {date:'2026-04-23',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:81818,vat:8182,total:90000},
-  {date:'2026-04-27',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:81818,vat:8182,total:90000},
-  {date:'2026-04-28',month:'2026-04',desc:'절연장갑(저압용) 구입',cat:'소모품비',supply:104000,vat:10400,total:114400},
-  {date:'2026-04-29',month:'2026-04',desc:'396거2246 업무차 주유',cat:'차량비',supply:54546,vat:5454,total:60000},
-  {date:'2026-04-29',month:'2026-04',desc:'석식비',cat:'비급여성',supply:140000,vat:0,total:140000},
-  {date:'2026-04-29',month:'2026-04',desc:'석식비',cat:'비급여성',supply:50000,vat:0,total:50000},
-  {date:'2026-04-29',month:'2026-04',desc:'석식비',cat:'비급여성',supply:54546,vat:5454,total:60000},
-  {date:'2026-04-30',month:'2026-04',desc:'875너3224 순찰차 주유',cat:'차량비',supply:72727,vat:7273,total:80000},
-  {date:'2026-04-30',month:'2026-04',desc:'커피 등 구입',cat:'비급여성',supply:69682,vat:6968,total:76650},
-  {date:'2026-04-30',month:'2026-04',desc:'휴지 등 구입',cat:'소모품비',supply:116364,vat:11636,total:128000},
-  {date:'2026-04-30',month:'2026-04',desc:'볼펜 등 구입',cat:'소모품비',supply:40910,vat:4090,total:45000},
-];
 document.addEventListener('DOMContentLoaded',function(){
-  RD=BUILT_RD;LD=BUILT_LIM;renderAll();
-  if(NOTION_DB){
-    document.getElementById('syncTime').textContent='설정 완료. 새로고침 버튼으로 데이터를 불러오세요.';
+  if(NOTION_DB && WORKER_URL){
+    RD=BUILT_RD;LD=BUILT_LIM;
+    document.getElementById('syncTime').innerHTML='<span style="color:#378ADD">노션 API 로드 중...</span>';
     loadFromApi();
   } else {
-    document.getElementById('syncTime').textContent='미리보기 데모 데이터 — ⚙ 설정 버튼을 눌러 DB ID를 입력하세요.';
+    RD=BUILT_RD;LD=BUILT_LIM;renderAll();
+    document.getElementById('syncTime').textContent='미리보기 데모 데이터 — ⚙ 설정 버튼을 눌러 Worker URL과 DB ID를 입력하세요.';
   }
 });
 
