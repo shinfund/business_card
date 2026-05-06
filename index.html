@@ -19,7 +19,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.hdr{background:#ffffff;padding:14px 16px 0;padding-top:max(14px,env(safe-area-inset-top));position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);box-shadow:0 3px 12px rgba(55,138,221,.12)}
+.hdr{background:#ffffff;padding-top:max(14px,env(safe-area-inset-top));position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);box-shadow:0 3px 12px rgba(55,138,221,.12)}.hdr-inner{max-width:1200px;margin:0 auto;padding:0 16px}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .logo{display:flex;align-items:center;gap:9px}
 .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,#378ADD,#185FA5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -33,7 +33,7 @@ body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);co
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinning{animation:spin .7s linear infinite}
 .sync-time{font-size:11px;color:#7AAAC8;text-align:right;margin-bottom:6px}
-.tab-nav{display:flex;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.tab-nav{display:flex;overflow-x:auto;scrollbar-width:none;}
 .tab-nav::-webkit-scrollbar{display:none}
 .tab-btn{flex-shrink:0;padding:9px 13px;font-size:13px;font-weight:600;color:#5A8AB8;cursor:pointer;border:none;border-bottom:2.5px solid transparent;background:none;font-family:inherit;min-height:44px;white-space:nowrap;transition:.2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .tab-btn.on{color:#0C447C;border-bottom-color:var(--sky);font-weight:700}
@@ -99,9 +99,9 @@ tbody tr:hover td{background:var(--sky50)}
 .btn-api,.btn-sync{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 @media(max-width:480px){.sum-val{font-size:18px}.lim-remain{font-size:15px}.acc-amt{font-size:13px}}
 @media(max-width:360px){.btn-api span,.btn-sync-txt{display:none}.logo-name{font-size:15px}}
-@media(min-width:481px){.main{padding:20px;max-width:1200px}.hdr{padding:16px 20px 0}.tab-nav{margin:0 -20px;padding:0 20px}.sum-grid{grid-template-columns:repeat(2,1fr)}.lim-cat-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
-@media(min-width:769px){.main{padding:26px 32px;max-width:1200px}.hdr{padding:18px 32px 0}.tab-nav{margin:0 -32px;padding:0 32px}.tab-btn{padding:11px 20px;font-size:14px}.sum-grid{grid-template-columns:repeat(4,1fr)}.lim-cat-grid{grid-template-columns:repeat(2,1fr);gap:14px}.bar-chart{height:220px;gap:16px}.logo-name{font-size:19px}.logo-mark{width:40px;height:40px}table{font-size:13px}thead th{font-size:12px;padding:10px 12px}tbody td{font-size:13px;padding:10px 12px}.acc-name{font-size:14px}.acc-amt{font-size:15px}.lim-remain{font-size:19px}.sum-val{font-size:22px}}
-@media(min-width:1100px){.main{padding:30px 40px}.hdr{padding:20px 40px 0}.tab-nav{margin:0 -40px;padding:0 40px}.sum-grid{grid-template-columns:repeat(4,1fr)}.lim-cat-grid{grid-template-columns:repeat(3,1fr);gap:16px}.bar-chart{height:240px}.logo-name{font-size:20px}.sum-val{font-size:24px}}
+@media(min-width:481px){.main{padding:20px;max-width:1200px}.hdr-inner{padding:0 20px}.sum-grid{grid-template-columns:repeat(2,1fr)}.lim-cat-grid{grid-template-columns:repeat(2,1fr);gap:12px}}
+@media(min-width:769px){.main{padding:26px 32px;max-width:1200px}.hdr-inner{padding:0 32px}.tab-btn{padding:11px 20px;font-size:14px}.sum-grid{grid-template-columns:repeat(4,1fr)}.lim-cat-grid{grid-template-columns:repeat(2,1fr);gap:14px}.bar-chart{height:220px;gap:16px}.logo-name{font-size:19px}.logo-mark{width:40px;height:40px}table{font-size:13px}thead th{font-size:12px;padding:10px 12px}tbody td{font-size:13px;padding:10px 12px}.acc-name{font-size:14px}.acc-amt{font-size:15px}.lim-remain{font-size:19px}.sum-val{font-size:22px}}
+@media(min-width:1100px){.main{padding:30px 40px}.hdr-inner{padding:0 40px}.sum-grid{grid-template-columns:repeat(4,1fr)}.lim-cat-grid{grid-template-columns:repeat(3,1fr);gap:16px}.bar-chart{height:240px}.logo-name{font-size:20px}.sum-val{font-size:24px}}
 </style>
 </head>
 <body>
@@ -139,6 +139,7 @@ tbody tr:hover td{background:var(--sky50)}
 <div id="toast"></div>
 
 <header class="hdr">
+  <div class="hdr-inner">
   <div class="hdr-top">
     <div class="logo">
       <div class="logo-mark">
@@ -172,6 +173,7 @@ tbody tr:hover td{background:var(--sky50)}
     <button class="tab-btn" onclick="goTab('monthly',this)">월별 추이</button>
     <button class="tab-btn" onclick="goTab('detail',this)">사용 내역</button>
   </nav>
+  </div>
 </header>
 
 <main class="main">
