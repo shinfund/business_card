@@ -231,6 +231,7 @@ tbody tr:hover td{background:var(--sky50)}
 const NOTION_DB='2f559c8c9c0a804a9201e861453d6b48';
 const NOTION_LIM='2f659c8c9c0a8050b347ec81f11e9084';
 const NOTION_VER='2022-06-28';
+const WORKER_URL='https://notion-proxy.shinfund.workers.dev';
 const CAT_CLR={
   '비급여성':{bg:'#E6F1FB',fg:'#0C447C',dot:'#378ADD'},
   '비급여성(생수)':{bg:'#E1F5EE',fg:'#085041',dot:'#1D9E75'},
@@ -312,7 +313,7 @@ function saveKey(){
 async function queryDB(dbId,key,cursor){
   const body={page_size:100,sorts:[{property:'사용일자',direction:'ascending'}]};
   if(cursor)body.start_cursor=cursor;
-  const r=await fetch('https://api.notion.com/v1/databases/'+dbId+'/query',{method:'POST',headers:{'Authorization':'Bearer '+key,'Notion-Version':NOTION_VER,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const r=await fetch(WORKER_URL+'/v1/databases/'+dbId+'/query',{method:'POST',headers:{'Authorization':'Bearer '+key,'Notion-Version':NOTION_VER,'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok)throw new Error('API '+r.status);
   return r.json();
 }
