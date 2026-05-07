@@ -119,20 +119,20 @@ tbody tr:hover td{background:var(--sky50)}
     </div>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">Cloudflare Worker URL</label>
-      <input id="cfgWorkerUrl" type="url" placeholder="https://notion-proxy.shinfund.workers.dev"
+      <input id="cfgWorkerUrl" type="url" placeholder="https://xxx.workers.dev"
         style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
         oninput="this.style.borderColor='#378ADD'">
     </div>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">사용내역 DB ID</label>
-      <input id="cfgDbId" type="text" placeholder="2f559c8c9c0a804a9201e861453d6b48"
+      <input id="cfgDbId" type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
         oninput="this.style.borderColor='#378ADD'">
       <p style="font-size:11px;color:#6B7E99;margin-top:3px">법인카드 사용내역 노션 DB ID</p>
     </div>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">한도 DB ID <span style="font-weight:400;color:#9ab">(선택)</span></label>
-      <input id="cfgLimId" type="text" placeholder="2f659c8c9c0a8050b347ec81f11e9084"
+      <input id="cfgLimId" type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
         oninput="this.style.borderColor='#378ADD'">
       <p style="font-size:11px;color:#6B7E99;margin-top:3px">법인카드 한도 노션 DB ID (없으면 내장 데이터 사용)</p>
@@ -269,8 +269,7 @@ const BUILT_RD=[
   {date:'2026-04-30',month:'2026-04',desc:'볼펜 등 구입',cat:'소모품비',supply:40910,vat:4090,total:45000},
 ];
 
-// ── 설정: localStorage에서 로드 (기본 Worker URL 하드코딩 제거) ──
-// 올바른 DB ID: 사용내역=2f559c8c9c0a804a9201e861453d6b48 / 한도=2f659c8c9c0a8050b347ec81f11e9084
+// ── 설정: localStorage에서 로드 ──
 const NOTION_VER='2022-06-28';
 let WORKER_URL = localStorage.getItem('card_workerUrl') || '';
 let NOTION_DB  = localStorage.getItem('card_dbId')      || '';
