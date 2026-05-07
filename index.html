@@ -125,14 +125,14 @@ tbody tr:hover td{background:var(--sky50)}
     </div>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">사용내역 DB ID</label>
-      <input id="cfgDbId" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      <input id="cfgDbId" type="text" placeholder="2f559c8c9c0a804a9201e861453d6b48"
         style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
         oninput="this.style.borderColor='#378ADD'">
       <p style="font-size:11px;color:#6B7E99;margin-top:3px">법인카드 사용내역 노션 DB ID</p>
     </div>
     <div style="margin-bottom:12px">
       <label style="font-size:12px;font-weight:700;color:#3D4F68;display:block;margin-bottom:5px">한도 DB ID <span style="font-weight:400;color:#9ab">(선택)</span></label>
-      <input id="cfgLimId" type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      <input id="cfgLimId" type="text" placeholder="2f659c8c9c0a8050b347ec81f11e9084"
         style="width:100%;padding:10px 12px;border:1.5px solid #D0E4F8;border-radius:10px;font-size:15px;font-family:inherit;outline:none;color:#1A2535;background:#F5F8FF;box-sizing:border-box"
         oninput="this.style.borderColor='#378ADD'">
       <p style="font-size:11px;color:#6B7E99;margin-top:3px">법인카드 한도 노션 DB ID (없으면 내장 데이터 사용)</p>
@@ -173,7 +173,7 @@ tbody tr:hover td{background:var(--sky50)}
       </button>
     </div>
   </div>
-  <div class="sync-time" id="syncTime">마지막 업데이트: —</div>
+  <div class="sync-time" id="syncTime"></div>
   <nav class="tab-nav">
     <button class="tab-btn on" onclick="goTab('overview',this)">현황 요약</button>
     <button class="tab-btn" onclick="goTab('account',this)">계정별 분석</button>
@@ -270,6 +270,7 @@ const BUILT_RD=[
 ];
 
 // ── 설정: localStorage에서 로드 (기본 Worker URL 하드코딩 제거) ──
+// 올바른 DB ID: 사용내역=2f559c8c9c0a804a9201e861453d6b48 / 한도=2f659c8c9c0a8050b347ec81f11e9084
 const NOTION_VER='2022-06-28';
 let WORKER_URL = localStorage.getItem('card_workerUrl') || '';
 let NOTION_DB  = localStorage.getItem('card_dbId')      || '';
@@ -318,9 +319,20 @@ function unifiedAccount(r){
   if(cat==='소모품비')return '소모품비'; // 세부 분류 불가 → 소모품비 합산
   return null;
 }
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function setStatusBar(msg,type){
+  // type: 'ok'|'err'|'warn'|'loading'
+  const el=document.getElementById('syncTime');
+  const styles={
+    ok:'color:#1D9E75;font-weight:600',
+    err:'color:#D85A30;font-weight:700;background:#FAECE7;padding:5px 10px;border-radius:8px;display:inline-block',
+    warn:'color:#BA7517;font-weight:600;background:#FAEEDA;padding:5px 10px;border-radius:8px;display:inline-block',
+    loading:'color:#378ADD'
+  };
+  el.innerHTML='<span style="'+( styles[type]||'')+'">'+msg+'</span>';
+}
 function setSync(on){document.getElementById('syncIco').classList.toggle('spinning',on)}
-function updTime(){document.getElementById('syncTime').textContent='마지막 업데이트: '+new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function updTime(){setStatusBar('✅ 마지막 업데이트: '+new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}),'ok')}
 function byMon(m){return m==='all'||m===''?RD:RD.filter(r=>r.month===m)}
 function curMonth(){if(!MONTHS.length)return '';const now=new Date().toISOString().slice(0,7);return MONTHS.includes(now)?now:(MONTHS[MONTHS.length-1]||'');}
 function goTab(id,btn){
@@ -386,25 +398,32 @@ function parseLim(pg){
 async function loadFromApi(){
   if(!NOTION_DB){ openApiModal(); return; }
   setSync(true);
-  document.getElementById('syncTime').innerHTML='<span style="color:#378ADD">노션 API 로드 중...</span>';
+  setStatusBar('⏳ 노션 API 로드 중...','loading');
   try{
     const[uRows,lRows]=await Promise.all([fetchAll(NOTION_DB),NOTION_LIM?fetchAll(NOTION_LIM).catch(()=>[]):Promise.resolve([])]);
     const parsed=uRows.map(parseRow).filter(Boolean);
-    if(parsed.length>0){RD=parsed;updTime();toast('노션 API 로드 완료 ('+RD.length+'건)');}
-    else{if(!RD.length)RD=BUILT_RD;updTime();toast('데이터 없음 · 내장 데이터 유지');}
+    if(parsed.length>0){RD=parsed;updTime();toast('노션 API 로드 완료 ('+RD.length+'건)','ok');}
+    else{if(!RD.length)RD=BUILT_RD;updTime();setStatusBar('⚠ 노션에 데이터 없음 · 내장 데이터 표시 중','warn');}
     const pl=lRows.map(parseLim).filter(r=>r.통합계정);
     if(pl.length>0)LD=pl;else if(!LD.length)LD=BUILT_LIM;
     renderAll();
   }catch(e){
     if(!RD.length)RD=BUILT_RD;
     if(!LD.length)LD=BUILT_LIM;
-    updTime();
     if(e.message==='DB_ID_MISSING'){ openApiModal(); }
     else if(e.message.includes('401')||e.message.includes('403')){
-      toast('인증 오류 · 설정을 확인해주세요');
+      setStatusBar('🔴 인증 오류 (401/403) · ⚙ 설정에서 Worker URL / DB ID 확인 필요','err');
+      toast('인증 오류 · 설정을 확인해주세요','err');
       openApiModal();
     }
-    else{toast('연결 실패 · 내장 데이터 유지');}
+    else if(e.message.includes('404')){
+      setStatusBar('🔴 DB를 찾을 수 없음 (404) · DB ID 또는 노션 Connections 확인 필요','err');
+      toast('DB 없음 · DB ID 또는 Connections 확인','err');
+    }
+    else{
+      setStatusBar('🔴 연결 실패 · '+e.message+' · 내장 데이터 표시 중','err');
+      toast('연결 실패 · 내장 데이터 유지','err');
+    }
     renderAll();
   }finally{setSync(false);}
 }
@@ -663,11 +682,10 @@ function renderDetail(){
 document.addEventListener('DOMContentLoaded',function(){
   if(NOTION_DB && WORKER_URL){
     RD=BUILT_RD;LD=BUILT_LIM;
-    document.getElementById('syncTime').innerHTML='<span style="color:#378ADD">노션 API 로드 중...</span>';
+    setStatusBar('⏳ 노션 API 로드 중...','loading');
     loadFromApi();
   } else {
     RD=BUILT_RD;LD=BUILT_LIM;renderAll();
-    document.getElementById('syncTime').textContent='미리보기 데모 데이터 — ⚙ 설정 버튼을 눌러 Worker URL과 DB ID를 입력하세요.';
   }
 });
 
