@@ -340,8 +340,10 @@ const BUILT_LIM=[
   {통합계정:"생수대금",한도금액:90000,계정항목:"비급여성(생수)",카드명:"법인카드"},
   {통합계정:"도서인쇄비",한도금액:120000,계정항목:"도서인쇄비",카드명:"법인카드"},
 ];
-let SHEET_ID=localStorage.getItem("card_sheetId")||"";
-let SHEET_NAME=localStorage.getItem("card_sheetName")||"사용내역";
+const DEFAULT_SHEET_ID="1yIdkg_1aqi7E4u16DSk-vUBFZbsKwS9L73djk4HJ2Bo";
+const DEFAULT_SHEET_NAME="사용내역";
+let SHEET_ID=localStorage.getItem("card_sheetId")||DEFAULT_SHEET_ID;
+let SHEET_NAME=localStorage.getItem("card_sheetName")||DEFAULT_SHEET_NAME;
 const CAT_CLR={"비급여성":{bg:"#E6F1FB",fg:"#0C447C",dot:"#378ADD"},"비급여성(생수)":{bg:"#E1F5EE",fg:"#085041",dot:"#1D9E75"},"소모품비":{bg:"#EEEDFE",fg:"#3C3489",dot:"#534AB7"},"차량비":{bg:"#EAF3DE",fg:"#27500A",dot:"#639922"},"차량비(법인카드)":{bg:"#FAEEDA",fg:"#633806",dot:"#BA7517"},"도서인쇄비":{bg:"#FAECE7",fg:"#712B13",dot:"#D85A30"}};
 function clr(cat){return CAT_CLR[cat]||{bg:"#F1EFE8",fg:"#5F5E5A",dot:"#B4B2A9"}}
 let RD=[],LD=[];
@@ -652,6 +654,12 @@ async function loadFromApi(){
   }
 }
 document.addEventListener("DOMContentLoaded",()=>{
+  // localStorage에 저장된 ID가 잘못된 경우 기본값으로 교정
+  if(!SHEET_ID||SHEET_ID===DEFAULT_SHEET_ID){
+    SHEET_ID=DEFAULT_SHEET_ID;
+    localStorage.setItem("card_sheetId",SHEET_ID);
+  }
+  if(!SHEET_NAME)SHEET_NAME=DEFAULT_SHEET_NAME;
   RD=BUILT_RD;LD=BUILT_LIM;
   const months=allMonths();if(months.length){const latest=months[months.length-1];curYear=parseInt(latest.slice(0,4));curMonth=parseInt(latest.slice(5,7));ddYearBase=curYear;}
   renderAll();
