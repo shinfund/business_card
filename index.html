@@ -108,8 +108,8 @@ tr:hover td{background:var(--sky50)}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D1520;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;transition:.3s;opacity:0;pointer-events:none;white-space:nowrap}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 #cfgModal{display:none}
-#cfgModal.modal-open{display:block}
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;padding:18px}
+#cfgModal.modal-open{display:flex;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center;padding:18px}
+.modal-backdrop{width:100%;display:flex;align-items:center;justify-content:center}
 .modal-box{background:var(--card);border-radius:var(--r20);padding:24px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
 .modal-title{font-size:16px;font-weight:700;color:var(--txt);margin-bottom:18px;display:flex;align-items:center;gap:7px}
 .modal-field{margin-bottom:14px}
@@ -126,7 +126,7 @@ tr:hover td{background:var(--sky50)}
 </style>
 </head>
 <body>
-<div id="cfgModal" style="display:none">
+<div id="cfgModal">
   <div class="modal-backdrop" onclick="closeCfgModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-title">
@@ -360,9 +360,10 @@ let CFG=(()=>{
 const CAT_CLR={"비급여성":{bg:"#E6F1FB",fg:"#0C447C",dot:"#378ADD"},"비급여성(생수)":{bg:"#E1F5EE",fg:"#085041",dot:"#1D9E75"},"소모품비":{bg:"#EEEDFE",fg:"#3C3489",dot:"#534AB7"},"차량비":{bg:"#EAF3DE",fg:"#27500A",dot:"#639922"},"차량비(법인카드)":{bg:"#FAEEDA",fg:"#633806",dot:"#BA7517"},"도서인쇄비":{bg:"#FAECE7",fg:"#712B13",dot:"#D85A30"}};
 function clr(cat){return CAT_CLR[cat]||{bg:"#F1EFE8",fg:"#5F5E5A",dot:"#B4B2A9"}}
 let RD=[],LD=[];
-let curYear=new Date().getFullYear(),curMonth=0;
-let ddYearBase=curYear,_activePanel="overview",dtPage=1;
-let trendYear=new Date().getFullYear(),trendYearBase=new Date().getFullYear();
+const THIS_YEAR=new Date().getFullYear();
+let curYear=THIS_YEAR,curMonth=0;
+let ddYearBase=THIS_YEAR,_activePanel="overview",dtPage=1;
+let trendYear=THIS_YEAR,trendYearBase=THIS_YEAR;
 const PS=25;
 const fmt=n=>Math.round(n||0).toLocaleString("ko-KR");
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
@@ -376,7 +377,8 @@ function switchPanel(name){
   if(name===_activePanel)return;
   _activePanel=name;
   PANELS.forEach(p=>{document.getElementById("panel-"+p).classList.toggle("active",p===name);document.getElementById("nav-"+p).classList.toggle("active",p===name);});
-  document.getElementById("monthSel").style.display=name==="monthly"?"none":"flex";
+  const MONTH_SEL_PANELS=["overview","account","limit","detail"];
+  document.getElementById("monthSel").style.display=MONTH_SEL_PANELS.includes(name)?"flex":"none";
   renderPanel(name);
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -396,11 +398,15 @@ function toggleDD(type){
 }
 function closeAllDD(){document.getElementById("ddYearMenu").classList.remove("open");document.getElementById("ddMonthMenu").classList.remove("open");const tm=document.getElementById("trendYearMenu");if(tm)tm.classList.remove("open");}
 function shiftDDYear(d){ddYearBase+=d;document.getElementById("ddYearCenter").textContent=ddYearBase;renderDDYear();}
+function buildYearOpts(base,dataYears,selYear,onPickFn,{allLabel,allPickVal}={}){
+  const minY=Math.min(base-1,...dataYears),maxY=Math.max(base+1,...dataYears);
+  const years=[];for(let y=minY;y<=maxY;y++)years.push(y);
+  const allOpt=allLabel?`<div class="dd-opt${!selYear?" sel":""}" style="text-align:center;border-bottom:1px solid var(--border2)" onclick="${onPickFn}(${allPickVal||0})">${allLabel}</div>`:"";
+  return allOpt+years.map(y=>`<div class="dd-opt${y===selYear?" sel":""}${dataYears.includes(y)&&y!==selYear?" has":""}" style="text-align:center" onclick="${onPickFn}(${y})">${y}년</div>`).join("");
+}
 function renderDDYear(){
-  const dy=new Set(RD.map(r=>parseInt(r.date.slice(0,4))).filter(Boolean));dy.add(curYear);
-  const minY=Math.min(ddYearBase-2,...dy),maxY=Math.max(ddYearBase+2,...dy),years=[];
-  for(let y=minY;y<=maxY;y++)years.push(y);
-  document.getElementById("ddYearOpts").innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);">`+years.map(y=>`<div class="dd-opt${y===curYear?" sel":""}${dy.has(y)&&y!==curYear?" has":""}" onclick="pickYear(${y})">${y}년</div>`).join("")+`</div>`;
+  const dy=[...new Set(RD.map(r=>parseInt(r.date.slice(0,4))).filter(Boolean))];dy.push(curYear);
+  document.getElementById("ddYearOpts").innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);">`+buildYearOpts(ddYearBase,dy,curYear,"pickYear")+`</div>`;
 }
 function renderDDMonth(){
   const ML=["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
@@ -417,7 +423,6 @@ function updateMonthLabel(){
 }
 document.addEventListener("click",e=>{const sel=document.getElementById("monthSel");if(sel&&!sel.contains(e.target))closeAllDD();});
 function renderOverview(recs){
-  recs=recs||filteredRD();
   const totalThis=recs.reduce((s,r)=>s+r.total,0);
   const monLbl=curMonth?`${curYear}년 ${curMonth}월`:curYear+"년 전체";
 
@@ -428,8 +433,8 @@ function renderOverview(recs){
     document.getElementById("kpiGrid").innerHTML=
       `<div class="kpi-card" style="background:var(--sky50);border:1px solid var(--sky100);grid-column:1/-1;text-align:center;padding:18px 12px"><div class="kpi-lbl" style="color:var(--sky600);margin-bottom:6px">${monLbl}</div><div style="font-size:15px;font-weight:700;color:var(--txt3)">📭 등록된 사용내역이 없습니다</div><div style="font-size:12px;color:var(--txt3);margin-top:4px">전월(${prevLbl}) 합계: ${fmt(prevTotal)}원 · ${prevRecs.length}건</div></div>`;
     document.getElementById("overviewBadge").textContent="0개";
-    document.getElementById("overviewCatBars").innerHTML=`<div class="empty"><div class="empty-icon">📭</div><p>데이터가 없습니다</p></div>`;
-    document.getElementById("topTbody").innerHTML=`<tr><td colspan="4"><div class="empty"><div class="empty-icon">📭</div><p>데이터가 없습니다</p></div></td></tr>`;
+    document.getElementById("overviewCatBars").innerHTML=emptyHTML();
+    document.getElementById("topTbody").innerHTML=`<tr><td colspan="4">${emptyHTML()}</td></tr>`;
     return;
   }
 
@@ -448,35 +453,33 @@ function renderOverview(recs){
   document.getElementById("overviewCatBars").innerHTML=catArr.length?
     `<div class="catbar-row" style="background:var(--sky50);border-radius:var(--r8);padding:8px 10px;margin-bottom:6px;border:1px solid var(--sky100)"><div class="catbar-name" style="font-size:12px;color:var(--sky600);font-weight:700">합계</div><div style="flex:1"></div><div class="catbar-amt" style="color:var(--sky800);font-size:14px;font-weight:900">${fmt(totalThis)}원</div><div class="catbar-pct" style="color:var(--sky600)">100%</div></div>`+
     buildCatBars(catArr,maxVal,totalThis)
-    :`<div class="empty"><div class="empty-icon">📭</div><p>데이터가 없습니다</p></div>`;
+    :emptyHTML();
   const top5=[...recs].sort((a,b)=>b.total-a.total).slice(0,5);
-  document.getElementById("topTbody").innerHTML=top5.map(r=>{const c=clr(r.cat);return`<tr><td style="white-space:nowrap;font-size:13px;color:var(--txt2)">${r.date}</td><td style="font-size:14px">${esc(r.desc)}</td><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(r.cat)}</span></td><td class="r" style="font-weight:800;color:var(--teal600);white-space:nowrap">${fmt(r.total)}</td></tr>`;}).join("")||`<tr><td colspan="4"><div class="empty"><div class="empty-icon">📭</div><p>데이터가 없습니다</p></div></td></tr>`;
+  document.getElementById("topTbody").innerHTML=top5.map(r=>{const c=clr(r.cat);return`<tr><td style="white-space:nowrap;font-size:13px;color:var(--txt2)">${r.date}</td><td style="font-size:14px">${esc(r.desc)}</td><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(r.cat)}</span></td><td class="r" style="font-weight:800;color:var(--teal600);white-space:nowrap">${fmt(r.total)}</td></tr>`;}).join("")||`<tr><td colspan="4">${emptyHTML()}</td></tr>`;
 }
 function buildCatBars(catArr,maxVal,totalRef){
   return catArr.map(([cat,amt])=>{const c=clr(cat),pct=Math.round(amt/totalRef*100),barW=Math.round(amt/maxVal*100);return`<div class="catbar-row"><div class="catbar-name">${esc(cat)}</div><div class="catbar-track"><div class="catbar-fill" style="width:${barW}%;background:${c.dot}">${barW>=18?fmt(amt):""}</div></div><div class="catbar-amt">${fmt(amt)}원</div><div class="catbar-pct">${pct}%</div></div>`;}).join("");
 }
 function renderAccount(recs){
-  recs=recs||filteredRD();
   if(curMonth&&!recs.length){
     const monLbl=`${curYear}년 ${curMonth}월`;
     document.getElementById("accBadge").textContent="0개";
-    document.getElementById("accCatBars").innerHTML=`<div class="empty"><div class="empty-icon">📭</div><p>${monLbl} 사용내역이 없습니다</p></div>`;
-    document.getElementById("accTableBody").innerHTML=`<tr><td colspan="4"><div class="empty"><div class="empty-icon">📭</div><p>데이터 없음</p></div></td></tr>`;
+    document.getElementById("accCatBars").innerHTML=emptyHTML(`${monLbl} 사용내역이 없습니다`);
+    document.getElementById("accTableBody").innerHTML=`<tr><td colspan="4">${emptyHTML("데이터 없음")}</td></tr>`;
     return;
   }
   const catMap={},cntMap={};recs.forEach(r=>{catMap[r.cat]=(catMap[r.cat]||0)+r.total;cntMap[r.cat]=(cntMap[r.cat]||0)+1;});
   const catArr=Object.entries(catMap).sort((a,b)=>b[1]-a[1]),total=catArr.reduce((s,[,v])=>s+v,0)||1,maxVal=catArr[0]?catArr[0][1]:1;
   document.getElementById("accBadge").textContent=catArr.length+"개";
-  document.getElementById("accCatBars").innerHTML=catArr.length?buildCatBars(catArr,maxVal,total):`<div class="empty"><div class="empty-icon">📭</div><p>데이터가 없습니다</p></div>`;
-  document.getElementById("accTableBody").innerHTML=catArr.length?catArr.map(([cat,amt])=>{const c=clr(cat),pct=Math.round(amt/total*100);return`<tr><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(cat)}</span></td><td class="r">${cntMap[cat]}건</td><td class="r" style="font-weight:800;color:var(--teal600)">${fmt(amt)}</td><td class="r" style="font-weight:700;color:${c.dot}">${pct}%</td></tr>`;}).join(""):`<tr><td colspan="4"><div class="empty"><div class="empty-icon">📭</div><p>데이터 없음</p></div></td></tr>`;
+  document.getElementById("accCatBars").innerHTML=catArr.length?buildCatBars(catArr,maxVal,total):emptyHTML();
+  document.getElementById("accTableBody").innerHTML=catArr.length?catArr.map(([cat,amt])=>{const c=clr(cat),pct=Math.round(amt/total*100);return`<tr><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(cat)}</span></td><td class="r">${cntMap[cat]}건</td><td class="r" style="font-weight:800;color:var(--teal600)">${fmt(amt)}</td><td class="r" style="font-weight:700;color:${c.dot}">${pct}%</td></tr>`;}).join(""):`<tr><td colspan="4">${emptyHTML("데이터 없음")}</td></tr>`;
 }
 function unifiedAccount(r){const cat=r.cat||"",desc=r.desc||"";if(cat==="비급여성(생수)")return"생수대금";if(cat==="도서인쇄비")return"도서인쇄비";if(cat==="차량비(법인카드)")return"차량비(법인카드)";if(cat==="차량비"){if(/순찰차|875너|\*{3}너/.test(desc))return"차량비(점검차)";if(/업무차|396거|\*{3}거/.test(desc))return"차량비(업무차)";return"차량비(점검차)";}if(cat==="비급여성"){if(/회식/.test(desc))return"직원회식";if(/석식|중식/.test(desc))return"중석식대";return"다과부식";}if(cat==="소모품비")return"소모품비";return null;}
 function renderLimit(recs){
-  recs=recs||filteredRD();
   if(curMonth&&!recs.length){
     const monLbl=`${curYear}년 ${curMonth}월`;
     document.getElementById("limKpiGrid").innerHTML=`<div class="kpi-card" style="background:var(--sky50);border:1px solid var(--sky100);grid-column:1/-1;text-align:center;padding:18px 12px"><div class="kpi-lbl" style="color:var(--sky600);margin-bottom:6px">${monLbl}</div><div style="font-size:15px;font-weight:700;color:var(--txt3)">📭 등록된 사용내역이 없습니다</div></div>`;
-    document.getElementById("limTableBody").innerHTML=`<tr><td colspan="6"><div class="empty"><div class="empty-icon">📭</div><p>데이터 없음</p></div></td></tr>`;
+    document.getElementById("limTableBody").innerHTML=`<tr><td colspan="6">${emptyHTML("데이터 없음")}</td></tr>`;
     document.getElementById("limCatGrid").innerHTML="";
     return;
   }
@@ -507,14 +510,10 @@ function renderLimit(recs){
 function renderMonthly(){
   // 월별추이 전용 연도 드롭다운 렌더
   const dataYears=[...new Set(RD.map(r=>parseInt(r.date.slice(0,4))).filter(Boolean))].sort();
-  if(!trendYearBase)trendYearBase=dataYears.length?dataYears[dataYears.length-1]:new Date().getFullYear();
+  if(!trendYearBase)trendYearBase=dataYears.length?dataYears[dataYears.length-1]:THIS_YEAR;
   document.getElementById("trendYearLabel").textContent=trendYear?trendYear+"년":"전체";
   document.getElementById("trendYearCenter").textContent=trendYearBase;
-  const opts=document.getElementById("trendYearOpts");
-  const minY=Math.min(trendYearBase-1,...dataYears),maxY=Math.max(trendYearBase+1,...dataYears);
-  const years=[];for(let y=minY;y<=maxY;y++)years.push(y);
-  opts.innerHTML=`<div class="dd-opt${!trendYear?" sel":""}" style="text-align:center;border-bottom:1px solid var(--border2)" onclick="pickTrendYear(0)">전체</div>`+
-    years.map(y=>`<div class="dd-opt${y===trendYear?" sel":""}${dataYears.includes(y)&&y!==trendYear?" has":""}" style="text-align:center" onclick="pickTrendYear(${y})">${y}년</div>`).join("");
+  document.getElementById("trendYearOpts").innerHTML=buildYearOpts(trendYearBase,dataYears,trendYear,"pickTrendYear",{allLabel:"전체",allPickVal:0});
 
   // 표시할 월 목록 생성
   let months=[];
@@ -549,7 +548,7 @@ function renderMonthly(){
     const catMap={};recs.forEach(r=>{catMap[r.cat]=(catMap[r.cat]||0)+r.total;});
     const topCat=Object.entries(catMap).sort((a,b)=>b[1]-a[1])[0],c=topCat?clr(topCat[0]):{bg:"#eee",fg:"#555"};
     return`<tr><td style="white-space:nowrap;font-weight:700">${mon.replace("-","년 ")}월</td><td class="r" style="font-weight:800;color:var(--teal600)">${fmt(tot)}</td><td>${topCat?`<span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(topCat[0])}</span>`:""}</td><td class="r" style="color:var(--txt2)">${recs.length}건</td></tr>`;
-  }).join("")||`<tr><td colspan="4"><div class="empty"><div class="empty-icon">📭</div><p>데이터 없음</p></div></td></tr>`;
+  }).join("")||`<tr><td colspan="4">${emptyHTML("데이터 없음")}</td></tr>`;
 }
 function toggleTrendDD(){
   const m=document.getElementById("trendYearMenu");
@@ -565,7 +564,7 @@ function renderDetail(){
   filterEl.innerHTML=`<option value="">전체 계정</option>`+cats.map(c=>`<option value="${esc(c)}"${c===selCat?" selected":""}>${esc(c)}</option>`).join("");
   const q=(document.getElementById("srch").value||"").toLowerCase();
   const ym=curMonth?`${curYear}-${String(curMonth).padStart(2,"0")}`:"";
-  const f=RD.filter(r=>(!ym||r.month===ym)&&(!selCat||r.cat===selCat)&&(!q||r.desc.toLowerCase().includes(q)||(r.vendor||"").toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
+  const f=RD.filter(r=>(!ym||r.month===ym)&&(!selCat||r.cat===selCat)&&(!q||(r.desc||"").toLowerCase().includes(q)||(r.vendor||"").toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));
   const total=f.length,pages=Math.ceil(total/PS)||1;
   if(dtPage>pages)dtPage=1;
   const paged=f.slice((dtPage-1)*PS,dtPage*PS);
@@ -580,7 +579,11 @@ function renderDetail(){
   b+=`<button class="pg" onclick="if(dtPage<${pages}){dtPage++;renderDetail()}">&#8250;</button>`;
   document.getElementById("pager").innerHTML=b;
 }
-// ── 마스킹 ────────────────────────────────────────────
+// ── 공통 헬퍼 ─────────────────────────────────────────
+function emptyHTML(msg){return`<div class="empty"><div class="empty-icon">📭</div><p>${msg||"데이터가 없습니다"}</p></div>`;}
+function openModal(){const m=document.getElementById("cfgModal");if(!m)return;m.classList.add("modal-open");document.body.style.overflow="hidden";}
+function closeModal(){const m=document.getElementById("cfgModal");if(!m)return;m.classList.remove("modal-open");document.body.style.overflow="";}
+
 function maskVal(v){
   if(!v)return"";
   if(v.startsWith("http")){
@@ -598,14 +601,11 @@ function openCfgModal(){
   else{wEl.value="";wEl.placeholder="https://your-worker.workers.dev";delete wEl.dataset.saved;}
   if(db){dEl.value="";dEl.placeholder=maskVal(db);dEl.dataset.saved="1";}
   else{dEl.value="";dEl.placeholder="2f559c8c-9c0a-804a-9201-e861453d6b48";delete dEl.dataset.saved;}
-  const m=document.getElementById("cfgModal");
-  m.style.cssText="display:flex;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center;padding:18px";
-  document.body.style.overflow="hidden";
+  openModal();
 }
 function closeCfgModal(e){
   if(e&&e.target!==e.currentTarget)return;
-  document.getElementById("cfgModal").style.cssText="display:none";
-  document.body.style.overflow="";
+  closeModal();
 }
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCfgModal();});
 function saveCfg(){
@@ -614,8 +614,7 @@ function saveCfg(){
   if(newWu)CFG.workerUrl=newWu;
   if(newDb)CFG.dbId=newDb;
   try{localStorage.setItem("card_workerUrl",CFG.workerUrl);localStorage.setItem("card_dbId",CFG.dbId);}catch(e){}
-  document.getElementById("cfgModal").style.cssText="display:none";
-  document.body.style.overflow="";
+  closeModal();
   if(CFG.workerUrl&&CFG.dbId){RD=[];loadData();}
 }
 // ── Notion 파싱 ───────────────────────────────────────
@@ -669,7 +668,7 @@ function parseNotionPage(page){
   // title 필드 fallback
   if(!desc){const tp=Object.values(props).find(p=>p.type==="title");if(tp)desc=getText(tp);}
   if(!date)return null;
-  const total=supply+vat||supply;
+  const total=(supply+vat)||0;
   return{date,month:date.slice(0,7),supply,vat,total,cat,desc:desc.trim(),vendor:vendor.trim()};
 }
 // ── Notion fetch 헬퍼 ────────────────────────────────
@@ -678,11 +677,14 @@ async function fetchNotion(body){
     method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)
   });
   if(!res.ok)throw new Error("HTTP "+res.status);
-  return res.json();
+  const ct=res.headers.get("content-type")||"";
+  if(!ct.includes("application/json"))throw new Error("응답이 JSON이 아닙니다 (content-type: "+ct+") — Worker URL을 확인하세요");
+  try{return await res.json();}catch(e){throw new Error("JSON 파싱 실패 — Worker 응답을 확인하세요");}
 }
 // ── 데이터 로드 ──────────────────────────────────────
 async function loadData(){
   if(!CFG.workerUrl||!CFG.dbId){openCfgModal();return;}
+  if(!LD.length)LD=BUILT_LIM;
   const btn=document.getElementById("syncBtn"),lbl=document.getElementById("syncLabel"),ico=document.getElementById("syncIco"),lu=document.getElementById("lastUpdate");
   if(btn)btn.disabled=true;if(ico)ico.classList.add("spinning");if(lbl)lbl.textContent="불러오는 중...";if(lu)lu.textContent="";
   try{
@@ -699,7 +701,7 @@ async function loadData(){
     let pages=data.results||[];
     let cursor=data.next_cursor,hasMore=data.has_more,pageCount=0;
     const MAX=20;
-    while(cursor&&hasMore&&pageCount++<MAX){
+    while(cursor&&hasMore&&++pageCount<MAX){
       const d2=await fetchNotion({...body,start_cursor:cursor});
       pages=[...pages,...(d2.results||[])];
       cursor=d2.next_cursor;hasMore=d2.has_more;
@@ -708,7 +710,6 @@ async function loadData(){
     // 중복 제거
     const seen=new Set();
     const deduped=parsed.filter(r=>{const key=r.date+"|"+r.supply+"|"+r.desc;if(seen.has(key))return false;seen.add(key);return true;});
-    if(!LD.length)LD=BUILT_LIM;
     if(deduped.length>0){
       RD=deduped;
       const months=allMonths();
@@ -724,7 +725,7 @@ async function loadData(){
       toast("Notion 데이터 없음 · 내장 데이터 유지");
     }
   }catch(e){
-    if(!RD.length)RD=BUILT_RD;if(!LD.length)LD=BUILT_LIM;renderAll();
+    if(!RD.length)RD=BUILT_RD;renderAll();
     const msg=e.message||"";let errMsg="⚠ "+msg;
     if(msg.includes("401")||msg.includes("403"))errMsg="⚠ 인증 오류 — Worker API 키 확인";
     else if(msg.includes("404"))errMsg="⚠ DB를 찾을 수 없음 — DB ID 확인";
