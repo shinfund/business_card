@@ -470,7 +470,7 @@ function renderAccount(recs){
   document.getElementById("accCatBars").innerHTML=catArr.length?buildCatBars(catArr,maxVal,total):`<div class="empty"><div class="empty-icon">📭</div><p>데이터가 없습니다</p></div>`;
   document.getElementById("accTableBody").innerHTML=catArr.length?catArr.map(([cat,amt])=>{const c=clr(cat),pct=Math.round(amt/total*100);return`<tr><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(cat)}</span></td><td class="r">${cntMap[cat]}건</td><td class="r" style="font-weight:800;color:var(--teal600)">${fmt(amt)}</td><td class="r" style="font-weight:700;color:${c.dot}">${pct}%</td></tr>`;}).join(""):`<tr><td colspan="4"><div class="empty"><div class="empty-icon">📭</div><p>데이터 없음</p></div></td></tr>`;
 }
-function unifiedAccount(r){const cat=r.cat||"",desc=r.desc||"";if(cat==="비급여성(생수)")return"생수대금";if(cat==="도서인쇄비")return"도서인쇄비";if(cat==="차량비(법인카드)")return"차량비(법인카드)";if(cat==="차량비"){if(/순찰차|875너/.test(desc))return"차량비(점검차)";if(/업무차|396거/.test(desc))return"차량비(업무차)";return"차량비(점검차)";}if(cat==="비급여성"){if(/회식/.test(desc))return"직원회식";if(/석식|중식/.test(desc))return"중석식대";return"다과부식";}if(cat==="소모품비")return"소모품비";return null;}
+function unifiedAccount(r){const cat=r.cat||"",desc=r.desc||"";if(cat==="비급여성(생수)")return"생수대금";if(cat==="도서인쇄비")return"도서인쇄비";if(cat==="차량비(법인카드)")return"차량비(법인카드)";if(cat==="차량비"){if(/순찰차|875너|\*{3}너/.test(desc))return"차량비(점검차)";if(/업무차|396거|\*{3}거/.test(desc))return"차량비(업무차)";return"차량비(점검차)";}if(cat==="비급여성"){if(/회식/.test(desc))return"직원회식";if(/석식|중식/.test(desc))return"중석식대";return"다과부식";}if(cat==="소모품비")return"소모품비";return null;}
 function renderLimit(recs){
   recs=recs||filteredRD();
   if(curMonth&&!recs.length){
