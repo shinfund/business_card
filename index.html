@@ -274,7 +274,7 @@ tr:hover td{background:var(--sky50)}
   </div>
   <div id="panel-detail" class="panel">
     <div class="sc">
-      <div class="sc-hd">사용 내역</div>
+      <div class="sc-hd">사용 내역 <span class="badge" id="demoBadge" style="display:none;background:var(--amber50);color:var(--amber);border-color:var(--amber100)">🔒 데모 — 보안항목 마스킹</span></div>
       <div class="filter-row">
         <select class="filter-select" id="filterCat" onchange="renderDetail()"><option value="">전체 계정</option></select>
       </div>
@@ -284,7 +284,7 @@ tr:hover td{background:var(--sky50)}
       </div>
       <div class="detail-count" id="detailCount"></div>
       <div class="tbl-wrap"><table>
-        <thead><tr><th>날짜</th><th>지출내역</th><th style="width:1%">계정</th><th class="r">공급가</th><th class="r">합계</th></tr></thead>
+        <thead><tr><th>날짜</th><th>지출내역</th><th>상호</th><th style="width:1%">계정</th><th class="r">공급가</th><th class="r">합계</th></tr></thead>
         <tbody id="dtTbody"></tbody>
       </table></div>
       <div class="pager" id="pager"></div>
@@ -294,40 +294,51 @@ tr:hover td{background:var(--sky50)}
 <div id="toast"></div>
 <script>
 const BUILT_RD=[
-  {date:"2026-04-01",month:"2026-04",desc:"875너3224 순찰차 요소수 보충",cat:"차량비(법인카드)",supply:17273,vat:1727,total:19000},
-  {date:"2026-04-01",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000},
-  {date:"2026-04-01",month:"2026-04",desc:"커피 구입",cat:"비급여성",supply:31636,vat:3164,total:34800},
-  {date:"2026-04-02",month:"2026-04",desc:"396거2246 업무차 주유",cat:"차량비",supply:45455,vat:4545,total:50000},
-  {date:"2026-04-02",month:"2026-04",desc:"제본비(3월,1분기)",cat:"도서인쇄비",supply:18182,vat:1818,total:20000},
-  {date:"2026-04-06",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:71971,vat:7197,total:79168},
-  {date:"2026-04-07",month:"2026-04",desc:"직원회식",cat:"비급여성",supply:104545,vat:10455,total:115000},
-  {date:"2026-04-08",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72727,vat:7273,total:80000},
-  {date:"2026-04-10",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000},
-  {date:"2026-04-10",month:"2026-04",desc:"396거2246 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000},
-  {date:"2026-04-14",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000},
-  {date:"2026-04-15",month:"2026-04",desc:"396거2246 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000},
-  {date:"2026-04-17",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72727,vat:7273,total:80000},
-  {date:"2026-04-17",month:"2026-04",desc:"커피 구입",cat:"비급여성",supply:29000,vat:2900,total:31900},
-  {date:"2026-04-20",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72727,vat:7273,total:80000},
-  {date:"2026-04-20",month:"2026-04",desc:"양면 테이프 구입",cat:"소모품비",supply:6500,vat:650,total:7150},
-  {date:"2026-04-21",month:"2026-04",desc:"396거2246 업무차 주유",cat:"차량비",supply:45455,vat:4545,total:50000},
-  {date:"2026-04-22",month:"2026-04",desc:"396거2246 업무차 주유",cat:"차량비",supply:36364,vat:3636,total:40000},
-  {date:"2026-04-22",month:"2026-04",desc:"직원회식",cat:"비급여성",supply:115453,vat:11547,total:127000},
-  {date:"2026-04-22",month:"2026-04",desc:"중식비",cat:"비급여성",supply:30000,vat:0,total:30000},
-  {date:"2026-04-22",month:"2026-04",desc:"396거2246 업무차 엔진오일 교환",cat:"차량비(법인카드)",supply:134545,vat:13455,total:148000},
-  {date:"2026-04-23",month:"2026-04",desc:"생수 구입",cat:"비급여성(생수)",supply:79455,vat:7945,total:87400},
-  {date:"2026-04-23",month:"2026-04",desc:"펄일자빗 등 구입",cat:"소모품비",supply:10454,vat:1046,total:11500},
-  {date:"2026-04-23",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:81818,vat:8182,total:90000},
-  {date:"2026-04-27",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:81818,vat:8182,total:90000},
-  {date:"2026-04-28",month:"2026-04",desc:"절연장갑(저압용) 구입",cat:"소모품비",supply:104000,vat:10400,total:114400},
-  {date:"2026-04-29",month:"2026-04",desc:"396거2246 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000},
-  {date:"2026-04-29",month:"2026-04",desc:"석식비",cat:"비급여성",supply:140000,vat:0,total:140000},
-  {date:"2026-04-29",month:"2026-04",desc:"석식비",cat:"비급여성",supply:50000,vat:0,total:50000},
-  {date:"2026-04-29",month:"2026-04",desc:"석식비",cat:"비급여성",supply:54546,vat:5454,total:60000},
-  {date:"2026-04-30",month:"2026-04",desc:"875너3224 순찰차 주유",cat:"차량비",supply:72727,vat:7273,total:80000},
-  {date:"2026-04-30",month:"2026-04",desc:"커피 등 구입",cat:"비급여성",supply:69682,vat:6968,total:76650},
-  {date:"2026-04-30",month:"2026-04",desc:"휴지 등 구입",cat:"소모품비",supply:116364,vat:11636,total:128000},
-  {date:"2026-04-30",month:"2026-04",desc:"볼펜 등 구입",cat:"소모품비",supply:40910,vat:4090,total:45000},
+  // ── 2026년 2월 ──
+  {date:"2026-02-03",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-03",month:"2026-02",desc:"커피 구입",cat:"비급여성",supply:27273,vat:2727,total:30000,vendor:"●●편의점",isDemo:true},
+  {date:"2026-02-05",month:"2026-02",desc:"***거**** 업무차 주유",cat:"차량비",supply:45455,vat:4545,total:50000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-06",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:71818,vat:7182,total:79000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-10",month:"2026-02",desc:"직원회식",cat:"비급여성",supply:95455,vat:9545,total:105000,vendor:"●●식당",isDemo:true},
+  {date:"2026-02-10",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-12",month:"2026-02",desc:"***거**** 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-13",month:"2026-02",desc:"생수 구입",cat:"비급여성(생수)",supply:79455,vat:7945,total:87400,vendor:"●●마트",isDemo:true},
+  {date:"2026-02-14",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-17",month:"2026-02",desc:"***거**** 업무차 주유",cat:"차량비",supply:45455,vat:4545,total:50000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-17",month:"2026-02",desc:"소화기 점검비",cat:"소모품비",supply:36364,vat:3636,total:40000,vendor:"●●안전(주)",isDemo:true},
+  {date:"2026-02-19",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:81818,vat:8182,total:90000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-20",month:"2026-02",desc:"중식비",cat:"비급여성",supply:30000,vat:0,total:30000,vendor:"●●식당",isDemo:true},
+  {date:"2026-02-21",month:"2026-02",desc:"***너**** 순찰차 요소수 보충",cat:"차량비(법인카드)",supply:17273,vat:1727,total:19000,vendor:"●●카센터",isDemo:true},
+  {date:"2026-02-24",month:"2026-02",desc:"***거**** 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-24",month:"2026-02",desc:"볼펜 등 사무용품 구입",cat:"소모품비",supply:18182,vat:1818,total:20000,vendor:"●●문구점",isDemo:true},
+  {date:"2026-02-25",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-02-26",month:"2026-02",desc:"석식비",cat:"비급여성",supply:54546,vat:5454,total:60000,vendor:"●●식당",isDemo:true},
+  {date:"2026-02-27",month:"2026-02",desc:"제본비(1월,2월)",cat:"도서인쇄비",supply:18182,vat:1818,total:20000,vendor:"●●인쇄소",isDemo:true},
+  {date:"2026-02-28",month:"2026-02",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  // ── 2026년 3월 ──
+  {date:"2026-03-03",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-03",month:"2026-03",desc:"커피 구입",cat:"비급여성",supply:31636,vat:3164,total:34800,vendor:"●●편의점",isDemo:true},
+  {date:"2026-03-04",month:"2026-03",desc:"***거**** 업무차 주유",cat:"차량비",supply:45455,vat:4545,total:50000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-06",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:71971,vat:7197,total:79168,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-07",month:"2026-03",desc:"직원회식",cat:"비급여성",supply:104545,vat:10455,total:115000,vendor:"●●식당",isDemo:true},
+  {date:"2026-03-10",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-11",month:"2026-03",desc:"***거**** 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-13",month:"2026-03",desc:"생수 구입",cat:"비급여성(생수)",supply:79455,vat:7945,total:87400,vendor:"●●마트",isDemo:true},
+  {date:"2026-03-14",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72727,vat:7273,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-17",month:"2026-03",desc:"커피 등 구입",cat:"비급여성",supply:29000,vat:2900,total:31900,vendor:"●●편의점",isDemo:true},
+  {date:"2026-03-17",month:"2026-03",desc:"***거**** 업무차 주유",cat:"차량비",supply:54546,vat:5454,total:60000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-18",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:81818,vat:8182,total:90000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-19",month:"2026-03",desc:"***거**** 업무차 엔진오일 교환",cat:"차량비(법인카드)",supply:134545,vat:13455,total:148000,vendor:"●●카센터",isDemo:true},
+  {date:"2026-03-20",month:"2026-03",desc:"중식비",cat:"비급여성",supply:30000,vat:0,total:30000,vendor:"●●식당",isDemo:true},
+  {date:"2026-03-21",month:"2026-03",desc:"양면테이프 등 구입",cat:"소모품비",supply:6500,vat:650,total:7150,vendor:"●●마트",isDemo:true},
+  {date:"2026-03-24",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72728,vat:7272,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-25",month:"2026-03",desc:"절연장갑(저압용) 구입",cat:"소모품비",supply:104000,vat:10400,total:114400,vendor:"●●안전(주)",isDemo:true},
+  {date:"2026-03-26",month:"2026-03",desc:"***거**** 업무차 주유",cat:"차량비",supply:45455,vat:4545,total:50000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-27",month:"2026-03",desc:"석식비",cat:"비급여성",supply:140000,vat:0,total:140000,vendor:"●●식당",isDemo:true},
+  {date:"2026-03-28",month:"2026-03",desc:"***너**** 순찰차 주유",cat:"차량비",supply:72727,vat:7273,total:80000,vendor:"●●주유소",isDemo:true},
+  {date:"2026-03-28",month:"2026-03",desc:"휴지 등 구입",cat:"소모품비",supply:116364,vat:11636,total:128000,vendor:"●●마트",isDemo:true},
+  {date:"2026-03-31",month:"2026-03",desc:"제본비(3월,1분기)",cat:"도서인쇄비",supply:18182,vat:1818,total:20000,vendor:"●●인쇄소",isDemo:true},
+  {date:"2026-03-31",month:"2026-03",desc:"커피 등 구입",cat:"비급여성",supply:69682,vat:6968,total:76650,vendor:"●●편의점",isDemo:true},
 ];
 const BUILT_LIM=[
   {통합계정:"다과부식",한도금액:100000,계정항목:"비급여성",카드명:"법인카드"},
@@ -559,7 +570,10 @@ function renderDetail(){
   if(dtPage>pages)dtPage=1;
   const paged=f.slice((dtPage-1)*PS,dtPage*PS);
   document.getElementById("detailCount").textContent=total+"건";
-  document.getElementById("dtTbody").innerHTML=paged.length?paged.map(r=>{const c=clr(r.cat);return`<tr><td style="white-space:nowrap;font-size:13px;color:var(--txt2)">${r.date}</td><td style="font-size:14px">${esc(r.desc)}</td><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(r.cat)}</span></td><td class="r" style="font-size:13px;color:var(--txt2)">${fmt(r.supply)}</td><td class="r" style="font-weight:800;color:var(--teal600)">${fmt(r.total)}</td></tr>`;}).join(""):`<tr><td colspan="5"><div class="empty"><div class="empty-icon">🔍</div><p>해당 조건의 내역이 없습니다</p></div></td></tr>`;
+  const hasDemo=paged.some(r=>r.isDemo);
+  const demoBadge=document.getElementById("demoBadge");
+  if(demoBadge)demoBadge.style.display=hasDemo?"inline-flex":"none";
+  document.getElementById("dtTbody").innerHTML=paged.length?paged.map(r=>{const c=clr(r.cat);const vendorTxt=r.isDemo?`<span style="color:var(--txt3);letter-spacing:.05em">${esc(r.vendor||"")}</span>`:esc(r.vendor||"");return`<tr><td style="white-space:nowrap;font-size:13px;color:var(--txt2)">${r.date}</td><td style="font-size:14px">${esc(r.desc)}</td><td style="font-size:13px;color:var(--txt2);white-space:nowrap">${vendorTxt}</td><td><span class="cat-tag" style="background:${c.bg};color:${c.fg}">${esc(r.cat)}</span></td><td class="r" style="font-size:13px;color:var(--txt2)">${fmt(r.supply)}</td><td class="r" style="font-weight:800;color:var(--teal600)">${fmt(r.total)}</td></tr>`;}).join(""):`<tr><td colspan="6"><div class="empty"><div class="empty-icon">🔍</div><p>해당 조건의 내역이 없습니다</p></div></td></tr>`;
   if(pages<=1){document.getElementById("pager").innerHTML="";return;}
   let b=`<button class="pg" onclick="if(dtPage>1){dtPage--;renderDetail()}">&#8249;</button>`;
   for(let i=1;i<=pages;i++)b+=`<button class="pg${dtPage===i?" on":""}" onclick="dtPage=${i};renderDetail()">${i}</button>`;
