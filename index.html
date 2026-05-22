@@ -126,22 +126,22 @@ tr:hover td{background:var(--sky50)}
 </style>
 </head>
 <body>
-<div id="cfgModal">
+<div id="cfgModal" style="display:none">
   <div class="modal-backdrop" onclick="closeCfgModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-title">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0F9D58" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-        Google Sheets 연동 설정
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Notion DB 연동 설정
       </div>
       <div class="modal-field">
-        <label class="modal-label">Google Sheets ID</label>
-        <input id="cfgSheetId" class="modal-input" type="text" placeholder="https://docs.google.com/spreadsheets/d/..."/>
-        <div class="modal-hint">스프레드시트 URL 전체 붙여넣기 OK &middot; <strong>링크 공유(뷰어)</strong> 설정 필요</div>
+        <label class="modal-label">Cloudflare Worker URL</label>
+        <input id="cfgWorkerUrl" class="modal-input" type="text" placeholder="https://your-worker.workers.dev"/>
+        <div class="modal-hint">저장된 값은 XX로 마스킹 표시 · 변경 시에만 새로 입력하세요</div>
       </div>
       <div class="modal-field">
-        <label class="modal-label">시트 이름 <span style="font-weight:400;color:var(--txt3)">(선택 &mdash; 비워두면 첫 번째 시트)</span></label>
-        <input id="cfgSheetName" class="modal-input" type="text" placeholder="사용내역"/>
-        <div class="modal-hint">탭 이름과 정확히 일치 (한글 OK)</div>
+        <label class="modal-label">노션 DB ID</label>
+        <input id="cfgDbId" class="modal-input" type="text" placeholder="2f559c8c-9c0a-804a-9201-e861453d6b48"/>
+        <div class="modal-hint">저장된 값은 XX로 마스킹 표시 · 변경 시에만 새로 입력하세요</div>
       </div>
       <div class="modal-btns">
         <button class="modal-cancel" onclick="closeCfgModal()">취소</button>
@@ -158,7 +158,7 @@ tr:hover td{background:var(--sky50)}
     </div>
     <div>
       <div class="logo-title">법인카드 현황</div>
-      <div class="logo-sub">Google Sheets 연동</div>
+      <div class="logo-sub">Notion DB 연동</div>
     </div>
   </div>
   <div class="header-right">
@@ -167,7 +167,7 @@ tr:hover td{background:var(--sky50)}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         설정
       </button>
-      <button class="btn-sync" id="syncBtn" onclick="loadFromApi()">
+      <button class="btn-sync" id="syncBtn" onclick="loadData()">
         <svg id="syncIco" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         <span id="syncLabel">새로고침</span>
       </button>
@@ -340,10 +340,12 @@ const BUILT_LIM=[
   {통합계정:"생수대금",한도금액:90000,계정항목:"비급여성(생수)",카드명:"법인카드"},
   {통합계정:"도서인쇄비",한도금액:120000,계정항목:"도서인쇄비",카드명:"법인카드"},
 ];
-const DEFAULT_SHEET_ID="1yIdkg_1aqi7E4u16DSk-vUBFZbsKwS9L73djk4HJ2Bo";
-const DEFAULT_SHEET_NAME="사용내역";
-let SHEET_ID=localStorage.getItem("card_sheetId")||DEFAULT_SHEET_ID;
-let SHEET_NAME=localStorage.getItem("card_sheetName")||DEFAULT_SHEET_NAME;
+// ── Notion 연동 설정 ──────────────────────────────────
+const DEFAULT_DB_ID="2f559c8c-9c0a-804a-9201-e861453d6b48";
+let CFG=(()=>{
+  try{return{workerUrl:localStorage.getItem("card_workerUrl")||"",dbId:localStorage.getItem("card_dbId")||DEFAULT_DB_ID};}
+  catch(e){return{workerUrl:"",dbId:DEFAULT_DB_ID};}
+})();
 const CAT_CLR={"비급여성":{bg:"#E6F1FB",fg:"#0C447C",dot:"#378ADD"},"비급여성(생수)":{bg:"#E1F5EE",fg:"#085041",dot:"#1D9E75"},"소모품비":{bg:"#EEEDFE",fg:"#3C3489",dot:"#534AB7"},"차량비":{bg:"#EAF3DE",fg:"#27500A",dot:"#639922"},"차량비(법인카드)":{bg:"#FAEEDA",fg:"#633806",dot:"#BA7517"},"도서인쇄비":{bg:"#FAECE7",fg:"#712B13",dot:"#D85A30"}};
 function clr(cat){return CAT_CLR[cat]||{bg:"#F1EFE8",fg:"#5F5E5A",dot:"#B4B2A9"}}
 let RD=[],LD=[];
@@ -427,7 +429,7 @@ function renderOverview(recs){
   document.getElementById("kpiGrid").innerHTML=
     `<div class="kpi-card" style="background:var(--sky50);border:1px solid var(--sky100)"><div class="kpi-lbl" style="color:var(--sky600)">${monLbl}</div><div class="kpi-val" style="color:var(--sky800)">${fmt(totalThis)}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:var(--txt2)">${recs.length}건</div></div>`+
     (curMonth?
-    `<div class="kpi-card" style="background:var(--card);border:1px solid var(--border)"><div class="kpi-lbl" style="color:var(--txt2)">전월 (${prevLbl})</div><div class="kpi-val" style="color:var(--txt)">${fmt(prevTotal)}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:var(--txt2)">${prevRecs.length}건</div></div><div class="kpi-card" style="background:${isUp?"var(--coral50)":"var(--teal50)"};border:1px solid ${isUp?"var(--coral100)":"var(--teal100)"}"><div class="kpi-lbl" style="color:${diffColor}">전월 대비</div><div class="kpi-val" style="color:${diffColor}">${sign(diff)}${fmt(Math.abs(diff))}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:${diffColor};font-weight:700">${diff===0?"변동없음":isUp?"증가":"감소"}</div></div>` :
+    `<div class="kpi-card" style="background:var(--card);border:1px solid var(--border)"><div class="kpi-lbl" style="color:var(--txt2)">${prevLbl}</div><div class="kpi-val" style="color:var(--txt)">${fmt(prevTotal)}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:var(--txt2)">${prevRecs.length}건</div></div><div class="kpi-card" style="background:${isUp?"var(--coral50)":"var(--teal50)"};border:1px solid ${isUp?"var(--coral100)":"var(--teal100)"}"><div class="kpi-lbl" style="color:${diffColor}">전월 대비</div><div class="kpi-val" style="color:${diffColor}">${sign(diff)}${fmt(Math.abs(diff))}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:${diffColor};font-weight:700">${diff===0?"변동없음":isUp?"증가":"감소"}</div></div>` :
     `<div class="kpi-card" style="background:var(--card);border:1px solid var(--border)"><div class="kpi-lbl" style="color:var(--txt2)">전체 누적</div><div class="kpi-val" style="color:var(--txt)">${fmt(RD.reduce((s,r)=>s+r.total,0))}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:var(--txt2)">${RD.length}건</div></div><div class="kpi-card" style="background:var(--teal50);border:1px solid var(--teal100)"><div class="kpi-lbl" style="color:var(--teal600)">건당 평균</div><div class="kpi-val" style="color:var(--teal600)">${fmt(recs.length?Math.round(totalThis/recs.length):0)}<span style="font-size:12px;font-weight:500">원</span></div><div class="kpi-sub" style="color:var(--txt2)">이번 연도</div></div>`);
   const catMap={};recs.forEach(r=>{catMap[r.cat]=(catMap[r.cat]||0)+r.total;});
   const catArr=Object.entries(catMap).sort((a,b)=>b[1]-a[1]),maxVal=catArr[0]?catArr[0][1]:1;
@@ -564,89 +566,156 @@ function renderDetail(){
   b+=`<button class="pg" onclick="if(dtPage<${pages}){dtPage++;renderDetail()}">&#8250;</button>`;
   document.getElementById("pager").innerHTML=b;
 }
-function openCfgModal(){document.getElementById("cfgSheetId").value=SHEET_ID||"";document.getElementById("cfgSheetName").value=SHEET_NAME||"";document.getElementById("cfgModal").classList.add("modal-open");document.body.style.overflow="hidden";}
-function closeCfgModal(e){if(e&&e.target!==e.currentTarget)return;document.getElementById("cfgModal").classList.remove("modal-open");document.body.style.overflow="";}
+// ── 마스킹 ────────────────────────────────────────────
+function maskVal(v){
+  if(!v)return"";
+  if(v.startsWith("http")){
+    try{const u=new URL(v);const h=u.hostname;const parts=h.split(".");const masked=parts[0].length>4?parts[0].slice(0,2)+"XX"+parts[0].slice(-2)+"."+parts.slice(1).join("."):("XX."+parts.slice(1).join("."));return u.protocol+"//"+masked;}
+    catch(e){return v.slice(0,6)+"XX...XX"+v.slice(-4);}
+  }
+  if(/^[0-9a-f\-]{32,36}$/i.test(v)){const clean=v.replace(/-/g,"");return clean.slice(0,4)+"-XXXX-XXXX-XXXX-"+clean.slice(-4);}
+  return v.slice(0,3)+"XX...XX"+v.slice(-3);
+}
+// ── 모달 ─────────────────────────────────────────────
+function openCfgModal(){
+  const wEl=document.getElementById("cfgWorkerUrl"),dEl=document.getElementById("cfgDbId");
+  const wu=CFG.workerUrl,db=CFG.dbId;
+  if(wu){wEl.value="";wEl.placeholder=maskVal(wu);wEl.dataset.saved="1";}
+  else{wEl.value="";wEl.placeholder="https://your-worker.workers.dev";delete wEl.dataset.saved;}
+  if(db){dEl.value="";dEl.placeholder=maskVal(db);dEl.dataset.saved="1";}
+  else{dEl.value="";dEl.placeholder="2f559c8c-9c0a-804a-9201-e861453d6b48";delete dEl.dataset.saved;}
+  const m=document.getElementById("cfgModal");
+  m.style.cssText="display:flex;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center;padding:18px";
+  document.body.style.overflow="hidden";
+}
+function closeCfgModal(e){
+  if(e&&e.target!==e.currentTarget)return;
+  document.getElementById("cfgModal").style.cssText="display:none";
+  document.body.style.overflow="";
+}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCfgModal();});
-function extractSheetId(v){const m=v.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);return m?m[1]:v.trim();}
-function saveCfg(){const rawId=document.getElementById("cfgSheetId").value.trim(),rawNam=document.getElementById("cfgSheetName").value.trim(),newId=rawId?extractSheetId(rawId):"";if(!newId&&!SHEET_ID){alert("스프레드시트 ID를 입력해주세요.");return;}if(newId)SHEET_ID=newId;if(rawNam)SHEET_NAME=rawNam;if(!SHEET_NAME)SHEET_NAME="사용내역";localStorage.setItem("card_sheetId",SHEET_ID);localStorage.setItem("card_sheetName",SHEET_NAME);closeCfgModal();if(SHEET_ID)loadFromApi();}
-function gvizUrl(){return`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;}
-function parseDateCell(cell){
-  // gviz 날짜 셀을 YYYY-MM-DD 문자열로 변환. 실패 시 ""
-  if(!cell)return"";
-  const v=cell.v,f=cell.f||"";
-  // 1) Date(yyyy,m,d) — gviz 표준 (월 0-based)
-  if(typeof v==="string"&&v.startsWith("Date(")){const m=v.match(/Date\((\d+),(\d+),(\d+)\)/);if(m)return`${m[1]}-${String(+m[2]+1).padStart(2,"0")}-${String(+m[3]).padStart(2,"0")}`;}
-  // 2) YYYY-MM-DD 문자열
-  if(typeof v==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(v))return v;
-  // 3) 숫자 시리얼 (Excel/Sheets 날짜: 1900-01-01 = 1)
-  if(typeof v==="number"&&v>40000&&v<60000){const d=new Date(Math.round((v-25569)*86400*1000));return d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0")+"-"+String(d.getUTCDate()).padStart(2,"0");}
-  // 4) formatted value: "2026. 5. 15" 또는 "2026-05-15" 또는 "2026/05/15"
-  const clean=(f||String(v||"")).replace(/\s/g,"");
-  let m2=clean.match(/^(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})$/);
-  if(m2)return`${m2[1]}-${m2[2].padStart(2,"0")}-${m2[3].padStart(2,"0")}`;
-  return"";
+function saveCfg(){
+  const wEl=document.getElementById("cfgWorkerUrl"),dEl=document.getElementById("cfgDbId");
+  const newWu=wEl.value.trim(),newDb=dEl.value.trim();
+  if(newWu)CFG.workerUrl=newWu;
+  if(newDb)CFG.dbId=newDb;
+  try{localStorage.setItem("card_workerUrl",CFG.workerUrl);localStorage.setItem("card_dbId",CFG.dbId);}catch(e){}
+  document.getElementById("cfgModal").style.cssText="display:none";
+  document.body.style.overflow="";
+  if(CFG.workerUrl&&CFG.dbId){RD=[];loadData();}
 }
-function parseGvizRow(cols,row,prevDate){
-  const cv=i=>row.c[i]?(row.c[i].v!==null?row.c[i].v:""):"";
-  const cvf=i=>{const v=cv(i);return typeof v==="number"?v:parseFloat(String(v).replace(/,/g,""))||0;};
-  const cvs=i=>String(cv(i)||"").trim();
-  // 합계 행 스킵
-  const firstCell=cvs(0);if(/합\s*계/.test(firstCell))return null;
-  // 날짜 파싱 — 여러 형식 대응
-  let date=row.c[0]?parseDateCell(row.c[0]):"";
-  // 날짜 없는 행 → 이전 행 날짜 이어받기
-  if(!date)date=prevDate||"";
+// ── Notion 파싱 ───────────────────────────────────────
+function normalizeCategory(cat){
+  if(!cat)return"";
+  if(cat==="차량비(법인)")return"차량비(법인카드)";
+  return cat;
+}
+function parseNotionPage(page){
+  const props=page.properties||{};
+  function getText(p){
+    if(!p)return"";
+    if(p.type==="title")return(p.title||[]).map(t=>t.plain_text||"").join("")||"";
+    if(p.type==="rich_text")return(p.rich_text||[]).map(t=>t.plain_text||"").join("")||"";
+    if(p.type==="select")return p.select?.name||"";
+    if(p.type==="number")return String(p.number??0);
+    if(p.type==="formula")return String(p.formula?.number??p.formula?.string??"");
+    if(p.type==="rollup"){
+      const a=p.rollup?.array||[];
+      if(a.length)return getText(a[0]);
+      return String(p.rollup?.number??p.rollup?.string??"");
+    }
+    if(p.type==="relation")return(p.relation||[]).map(r=>r.id).join(",");
+    return"";
+  }
+  function getNum(p){
+    if(!p)return 0;
+    if(p.type==="number")return parseFloat(p.number||0)||0;
+    if(p.type==="formula")return parseFloat(p.formula?.number||0)||0;
+    return parseFloat(getText(p))||0;
+  }
+  // 날짜
+  let date="";
+  for(const[,v] of Object.entries(props)){
+    if(v.type==="date"&&v.date?.start){date=v.date.start.slice(0,10);break;}
+  }
+  // 각 필드 추출 — 스키마 기준 (사용목적 및 지출내역, 사용일자, 공급가, 부가세, 계정항목)
+  let desc="",supply=0,vat=0,cat="",vendor="";
+  for(const[k,v] of Object.entries(props)){
+    const lk=k.toLowerCase().replace(/\s/g,"");
+    if(!desc&&(v.type==="title"||lk.includes("사용목적")||lk.includes("지출내역")))desc=getText(v);
+    if(!supply&&(lk==="공급가"||lk.includes("공급가")))supply=getNum(v);
+    if(!vat&&(lk==="부가세"||lk.includes("부가세")))vat=getNum(v);
+    if(!cat&&(lk==="계정항목"||lk.includes("계정")))cat=normalizeCategory(getText(v));
+    // 상호 (relation → title 롤업이 없으면 relation id)
+    if(!vendor&&(lk==="상호"||lk.includes("상호"))){
+      if(v.type==="relation"){const rel=v.relation||[];if(rel.length)vendor=rel[0].id||"";}
+      else vendor=getText(v);
+    }
+  }
+  // title 필드 fallback
+  if(!desc){const tp=Object.values(props).find(p=>p.type==="title");if(tp)desc=getText(tp);}
   if(!date)return null;
-  const s=cvf(1),v=cvf(2),t=cvf(3),cat=normalizeCategory(cvs(8));
-  if(!s&&!t)return null;
-  return{date,month:date.slice(0,7),supply:s,vat:v,total:t||s+v,cat,desc:cvs(9),vendor:cvs(6)};
+  const total=supply+vat||supply;
+  return{date,month:date.slice(0,7),supply,vat,total,cat,desc:desc.trim(),vendor:vendor.trim()};
 }
-function normalizeCategory(cat){if(cat==="차량비(법인)")return"차량비(법인카드)";return cat;}
-async function loadFromApi(){
-  if(!SHEET_ID){openCfgModal();return;}
+// ── Notion fetch 헬퍼 ────────────────────────────────
+async function fetchNotion(body){
+  const res=await fetch(`${CFG.workerUrl}/v1/databases/${CFG.dbId}/query`,{
+    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)
+  });
+  if(!res.ok)throw new Error("HTTP "+res.status);
+  return res.json();
+}
+// ── 데이터 로드 ──────────────────────────────────────
+async function loadData(){
+  if(!CFG.workerUrl||!CFG.dbId){openCfgModal();return;}
   const btn=document.getElementById("syncBtn"),lbl=document.getElementById("syncLabel"),ico=document.getElementById("syncIco"),lu=document.getElementById("lastUpdate");
   if(btn)btn.disabled=true;if(ico)ico.classList.add("spinning");if(lbl)lbl.textContent="불러오는 중...";if(lu)lu.textContent="";
   try{
-    const r=await fetch(gvizUrl());
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const text=await r.text();
-    if(text.includes("<html")||text.includes("<!DOCTYPE"))throw new Error("시트 공유 설정 오류 — 링크 공유(뷰어)로 설정하세요");
-    const jsonStr=text.replace(/^[^(]+\(/,"").replace(/\);?$/,""),json=JSON.parse(jsonStr);
-    if(!json.table)throw new Error("시트 데이터 없음 (공유 설정 확인)");
-    let prevDate="";
-    const rawParsed=(json.table.rows||[]).map(row=>{
-      const rec=parseGvizRow(json.table.cols||[],row,prevDate);
-      if(rec)prevDate=rec.date;
-      return rec;
-    }).filter(Boolean);
+    // 날짜 속성명 자동 감지 (1건 probe)
+    const probe=await fetchNotion({page_size:1});
+    let dateProp="사용일자";
+    if(probe.results&&probe.results.length){
+      const pp=probe.results[0].properties||{};
+      for(const[k,v] of Object.entries(pp)){if(v.type==="date"){dateProp=k;break;}}
+    }
+    // 전체 조회 (filter 없이 전체 — 내장 데이터와 동일 범위)
+    const body={page_size:100,sorts:[{property:dateProp,direction:"ascending"}]};
+    const data=await fetchNotion(body);
+    let pages=data.results||[];
+    let cursor=data.next_cursor,hasMore=data.has_more,pageCount=0;
+    const MAX=20;
+    while(cursor&&hasMore&&pageCount++<MAX){
+      const d2=await fetchNotion({...body,start_cursor:cursor});
+      pages=[...pages,...(d2.results||[])];
+      cursor=d2.next_cursor;hasMore=d2.has_more;
+    }
+    const parsed=pages.map(parseNotionPage).filter(Boolean);
+    // 중복 제거
     const seen=new Set();
-    const parsed=rawParsed.filter(r=>{
-      const key=r.date+"|"+r.supply+"|"+r.desc;
-      if(seen.has(key))return false;
-      seen.add(key);return true;
-    });
+    const deduped=parsed.filter(r=>{const key=r.date+"|"+r.supply+"|"+r.desc;if(seen.has(key))return false;seen.add(key);return true;});
     if(!LD.length)LD=BUILT_LIM;
-    if(parsed.length>0){
-      RD=parsed;
+    if(deduped.length>0){
+      RD=deduped;
       const months=allMonths();
       if(months.length){const latest=months[months.length-1];curYear=parseInt(latest.slice(0,4));curMonth=parseInt(latest.slice(5,7));ddYearBase=curYear;}
       renderAll();
       const now=new Date(),ts=String(now.getMonth()+1).padStart(2,"0")+". "+String(now.getDate()).padStart(2,"0")+". "+now.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"});
       if(lu){lu.textContent="마지막 업데이트: "+ts;lu.style.color="rgba(255,255,255,.75)";}
-      toast("구글 시트 로드 완료 ("+RD.length+"건)");
+      toast("Notion 로드 완료 ("+RD.length+"건)");
     }else{
       if(!RD.length)RD=BUILT_RD;
       renderAll();
-      if(lu){lu.textContent="⚠ 유효 데이터 없음 — 날짜 형식(YYYY-MM-DD) 확인";lu.style.color="rgba(255,150,130,.9)";}
-      toast("파싱 실패 — 날짜 형식 확인");
+      if(lu){lu.textContent="⚠ 데이터 없음 — DB ID 또는 Worker 설정 확인";lu.style.color="rgba(255,150,130,.9)";}
+      toast("Notion 데이터 없음 · 내장 데이터 유지");
     }
   }catch(e){
     if(!RD.length)RD=BUILT_RD;if(!LD.length)LD=BUILT_LIM;renderAll();
     const msg=e.message||"";let errMsg="⚠ "+msg;
-    if(msg.includes("403")||msg.includes("401"))errMsg="⚠ 접근 권한 없음 — 링크 공유(뷰어)로 설정하세요";
-    else if(msg.includes("404"))errMsg="⚠ 시트를 찾을 수 없음 — ID 확인";
-    else if(msg.includes("공유"))errMsg="⚠ 시트 공유 설정 확인 필요";
-    else if(msg.includes("Failed to fetch"))errMsg="⚠ 네트워크 오류 — 연결 확인";
+    if(msg.includes("401")||msg.includes("403"))errMsg="⚠ 인증 오류 — Worker API 키 확인";
+    else if(msg.includes("404"))errMsg="⚠ DB를 찾을 수 없음 — DB ID 확인";
+    else if(msg.includes("400"))errMsg="⚠ HTTP 400 — Worker URL 또는 DB ID 확인";
+    else if(msg.includes("Failed to fetch"))errMsg="⚠ 네트워크 오류 — Worker URL 확인";
     if(lu){lu.textContent=errMsg;lu.style.color="rgba(255,150,130,.9)";}
     toast("연결 실패 · 내장 데이터 유지");
   }finally{
@@ -654,16 +723,10 @@ async function loadFromApi(){
   }
 }
 document.addEventListener("DOMContentLoaded",()=>{
-  // localStorage에 저장된 ID가 잘못된 경우 기본값으로 교정
-  if(!SHEET_ID||SHEET_ID===DEFAULT_SHEET_ID){
-    SHEET_ID=DEFAULT_SHEET_ID;
-    localStorage.setItem("card_sheetId",SHEET_ID);
-  }
-  if(!SHEET_NAME)SHEET_NAME=DEFAULT_SHEET_NAME;
   RD=BUILT_RD;LD=BUILT_LIM;
   const months=allMonths();if(months.length){const latest=months[months.length-1];curYear=parseInt(latest.slice(0,4));curMonth=parseInt(latest.slice(5,7));ddYearBase=curYear;}
   renderAll();
-  if(SHEET_ID)loadFromApi();
+  if(CFG.workerUrl&&CFG.dbId)loadData();
 });
 </script>
 </body>
